@@ -1,0 +1,569 @@
+{% extends "utility/base.html" %}
+{% block title %}Site Inspection Entry — BSSutility{% endblock %}
+{% block nav_inspection %}active{% endblock %}
+{% block mob_inspection %}active{% endblock %}
+
+{% block content %}
+
+<!-- ══════════ PAGE HEADER ══════════ -->
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-clipboard-pulse"></i></div>
+    <div>
+      Site Inspection Entry
+      <span class="ph-sub">Fill all sections and submit to record the inspection</span>
+    </div>
+  </div>
+  <a href="/inspections/" class="btn-outline-blue d-none d-md-inline-flex"
+     style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff;">
+    <i class="bi bi-list-check"></i> View Records
+  </a>
+</div>
+
+<form method="post" novalidate id="inspection-form">
+  {% csrf_token %}
+
+  <!-- ══════════ 01 — SITE & DATE ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge blue"><i class="bi bi-geo-alt-fill"></i></div>
+        <div>
+          <div class="sec-name">Site &amp; Date</div>
+          <div class="sec-desc">Select the site and the date of inspection</div>
+        </div>
+      </div>
+      <span class="step-pill">01</span>
+    </div>
+    <div class="form-card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-8">
+          <label class="form-label">Site Name <span class="req">*</span></label>
+          <select id="site_select" name="site" style="width:100%"></select>
+          {% if form.site.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.site.errors }}</div>{% endif %}
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Inspection Date <span class="req">*</span></label>
+          <input type="date" name="inspection_date"
+                 value="{{ form.inspection_date.value|default:'' }}"
+                 class="form-control{% if form.inspection_date.errors %} is-invalid{% endif %}">
+          {% if form.inspection_date.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.inspection_date.errors }}</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Site info preview -->
+      <div class="info-panel mt-3" id="site_preview" style="display:none;">
+        <div class="info-panel-hdr"><i class="bi bi-info-circle-fill me-2"></i>Site Information</div>
+        <div class="info-grid">
+          <div class="info-cell">
+            <span class="info-lbl">Site Code</span>
+            <span class="info-val" id="site_code">—</span>
+          </div>
+          <div class="info-cell">
+            <span class="info-lbl">BSS Incharge</span>
+            <span class="info-val" id="bss_incharge">—</span>
+          </div>
+          <div class="info-cell">
+            <span class="info-lbl">Technician</span>
+            <span class="info-val" id="technician">—</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 02 — POWER READINGS ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge yellow"><i class="bi bi-lightning-charge-fill"></i></div>
+        <div>
+          <div class="sec-name">Power Readings</div>
+          <div class="sec-desc">Enter meter readings at the time of inspection</div>
+        </div>
+      </div>
+      <span class="step-pill">02</span>
+    </div>
+    <div class="form-card-body">
+      <div class="row g-3">
+        <div class="col-6 col-md-4">
+          <label class="form-label">EB Reading <span class="utag">kWh</span></label>
+          <div class="ico-wrap">
+            <i class="bi bi-speedometer2 fld-ico"></i>
+            <input type="number" name="eb_reading" step="0.01"
+                   value="{{ form.eb_reading.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.eb_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.eb_reading.errors }}</div>{% endif %}
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label">DG KWH Reading <span class="utag">kWh</span></label>
+          <div class="ico-wrap">
+            <i class="bi bi-battery-charging fld-ico"></i>
+            <input type="number" name="dg_kwh_reading" step="0.01"
+                   value="{{ form.dg_kwh_reading.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.dg_kwh_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.dg_kwh_reading.errors }}</div>{% endif %}
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label">Hour Meter Reading <span class="utag">hrs</span></label>
+          <div class="ico-wrap">
+            <i class="bi bi-clock fld-ico"></i>
+            <input type="number" name="hour_meter_reading" step="0.01"
+                   value="{{ form.hour_meter_reading.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.hour_meter_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.hour_meter_reading.errors }}</div>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 03 — DG DETAILS ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge green"><i class="bi bi-gear-fill"></i></div>
+        <div>
+          <div class="sec-name">DG Details</div>
+          <div class="sec-desc">Diesel generator status and remarks</div>
+        </div>
+      </div>
+      <span class="step-pill">03</span>
+    </div>
+    <div class="form-card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">DG Status</label>
+          <select name="dg_status" class="form-select">
+            <option value="">— Select —</option>
+            <option value="auto"   {% if form.dg_status.value == "auto"   %}selected{% endif %}>Auto</option>
+            <option value="manual" {% if form.dg_status.value == "manual" %}selected{% endif %}>Manual</option>
+            <option value="faulty" {% if form.dg_status.value == "faulty" %}selected{% endif %}>Faulty</option>
+          </select>
+        </div>
+        <div class="col-12 col-md-8">
+          <label class="form-label">DG Remarks</label>
+          <textarea name="dg_remarks" rows="2" class="form-control"
+                    placeholder="Any remarks about the DG...">{{ form.dg_remarks.value|default:'' }}</textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 04 — SOLAR / POWERPLANT ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge orange"><i class="bi bi-sun-fill"></i></div>
+        <div>
+          <div class="sec-name">Solar / Powerplant</div>
+          <div class="sec-desc">Module count and DC load information</div>
+        </div>
+      </div>
+      <span class="step-pill">04</span>
+    </div>
+    <div class="form-card-body">
+
+      <!-- DC Load & Max Modules -->
+      <div class="row g-3 mb-3">
+        <div class="col-6 col-md-4">
+          <label class="form-label">DC Load <span class="utag">kW</span></label>
+          <div class="ico-wrap">
+            <i class="bi bi-plug fld-ico"></i>
+            <input type="number" name="dc_load_kw" step="0.01"
+                   value="{{ form.dc_load_kw.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label">Powerplant Max Modules</label>
+          <div class="ico-wrap">
+            <i class="bi bi-grid-3x3 fld-ico"></i>
+            <input type="number" name="powerplant_max_modules"
+                   value="{{ form.powerplant_max_modules.value|default:'' }}"
+                   placeholder="0" class="form-control ico-input">
+          </div>
+        </div>
+      </div>
+
+      <!-- Module count grid -->
+      <div class="module-grid">
+        <div class="module-cell total-cell">
+          <div class="mcell-label"><i class="bi bi-grid me-1"></i>Total Modules</div>
+          <input type="number" name="total_modules"
+                 value="{{ form.total_modules.value|default:'' }}"
+                 placeholder="0" class="form-control text-center fw-bold">
+        </div>
+        <div class="module-arrow"><i class="bi bi-arrow-right-circle-fill"></i></div>
+        <div class="module-cell working-cell">
+          <div class="mcell-label">
+            <span class="mdot green-dot"></span> Working
+          </div>
+          <input type="number" name="working_modules"
+                 value="{{ form.working_modules.value|default:'' }}"
+                 placeholder="0" class="form-control text-center">
+        </div>
+        <div class="module-cell faulty-cell">
+          <div class="mcell-label">
+            <span class="mdot red-dot"></span> Faulty
+          </div>
+          <input type="number" name="faulty_modules"
+                 value="{{ form.faulty_modules.value|default:'' }}"
+                 placeholder="0" class="form-control text-center">
+        </div>
+        <div class="module-cell spare-cell">
+          <div class="mcell-label">
+            <span class="mdot grey-dot"></span> Spare
+          </div>
+          <input type="number" name="spare_modules"
+                 value="{{ form.spare_modules.value|default:'' }}"
+                 placeholder="0" class="form-control text-center">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ 05 — BATTERY ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge purple"><i class="bi bi-battery-full"></i></div>
+        <div>
+          <div class="sec-name">Battery</div>
+          <div class="sec-desc">Backup hours, discharge test and cleanliness</div>
+        </div>
+      </div>
+      <span class="step-pill">05</span>
+    </div>
+    <div class="form-card-body">
+      <div class="row g-3">
+        <div class="col-12 col-md-4">
+          <label class="form-label">Battery Backup <span class="utag">hrs</span></label>
+          <div class="ico-wrap">
+            <i class="bi bi-clock-history fld-ico"></i>
+            <input type="number" name="battery_backup_hours" step="0.01"
+                   value="{{ form.battery_backup_hours.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label">Discharge Test Conducted</label>
+          <select name="discharge_test_conducted" class="form-select">
+            <option value="">— Select —</option>
+            <option value="Yes" {% if form.discharge_test_conducted.value == "Yes" %}selected{% endif %}>Yes</option>
+            <option value="No"  {% if form.discharge_test_conducted.value == "No"  %}selected{% endif %}>No</option>
+          </select>
+        </div>
+        <div class="col-6 col-md-4">
+          <label class="form-label">Battery Cleanliness</label>
+          <select name="battery_cleanliness" class="form-select">
+            <option value="">— Select —</option>
+            <option value="good"    {% if form.battery_cleanliness.value == "good"    %}selected{% endif %}>Good</option>
+            <option value="average" {% if form.battery_cleanliness.value == "average" %}selected{% endif %}>Average</option>
+            <option value="poor"    {% if form.battery_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════ 06 — EQUIPMENT CONDITIONS ══════════ -->
+  <div class="form-card">
+    <div class="form-card-header">
+      <div class="fch-left">
+        <div class="sec-badge teal"><i class="bi bi-tools"></i></div>
+        <div>
+          <div class="sec-name">Equipment Conditions</div>
+          <div class="sec-desc">Status of all critical site equipment</div>
+        </div>
+      </div>
+      <span class="step-pill">06</span>
+    </div>
+    <div class="form-card-body">
+      <div class="row g-3">
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">
+            <i class="bi bi-lightbulb text-warning me-1"></i>Aviation Lamp
+          </label>
+          <select name="aviation_lamp" class="form-select cond-select">
+            <option value="">— Select —</option>
+            <option value="working"       {% if form.aviation_lamp.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.aviation_lamp.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.aviation_lamp.value == "not_available" %}selected{% endif %}>Not Available</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">
+            <i class="bi bi-fire text-danger me-1"></i>Fire Extinguisher
+          </label>
+          <select name="fire_extinguisher" class="form-select cond-select">
+            <option value="">— Select —</option>
+            <option value="working"       {% if form.fire_extinguisher.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.fire_extinguisher.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.fire_extinguisher.value == "not_available" %}selected{% endif %}>Not Available</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">
+            <i class="bi bi-wind text-info me-1"></i>AC Status
+          </label>
+          <select name="ac_status" class="form-select cond-select">
+            <option value="">— Select —</option>
+            <option value="working"       {% if form.ac_status.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.ac_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.ac_status.value == "not_available" %}selected{% endif %}>Not Available</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">
+            <i class="bi bi-thermometer-snow text-primary me-1"></i>Free Cooling
+          </label>
+          <select name="free_cooling_status" class="form-select cond-select">
+            <option value="">— Select —</option>
+            <option value="working"       {% if form.free_cooling_status.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.free_cooling_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.free_cooling_status.value == "not_available" %}selected{% endif %}>Not Available</option>
+          </select>
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">
+            <i class="bi bi-stars text-success me-1"></i>Site Cleanliness
+          </label>
+          <select name="site_cleanliness" class="form-select cond-select">
+            <option value="">— Select —</option>
+            <option value="good"    {% if form.site_cleanliness.value == "good"    %}selected{% endif %}>Good</option>
+            <option value="average" {% if form.site_cleanliness.value == "average" %}selected{% endif %}>Average</option>
+            <option value="poor"    {% if form.site_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
+          </select>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  {% if form.non_field_errors %}
+  <div class="alert alert-danger">
+    <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+    <div>{{ form.non_field_errors }}</div>
+  </div>
+  {% endif %}
+
+  <!-- ══════════ SUBMIT BAR ══════════ -->
+  <div class="submit-bar">
+    <div class="submit-inner">
+      <div class="submit-hint">
+        <i class="bi bi-shield-check text-success me-2"></i>
+        All data is saved securely to the database
+      </div>
+      <div class="d-flex gap-2">
+        <a href="/" class="btn-outline-blue"><i class="bi bi-x-circle"></i> Cancel</a>
+        <button type="submit" class="btn-blue">
+          <i class="bi bi-check-circle-fill"></i> Save Inspection
+        </button>
+      </div>
+    </div>
+  </div>
+
+</form>
+
+<style>
+  /* ── Form Card ── */
+  .form-card {
+    background:#fff; border:1px solid var(--grey-200);
+    border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
+    margin-bottom:1rem; overflow:hidden; transition:box-shadow .2s;
+  }
+  .form-card:hover { box-shadow:var(--shadow-md); }
+  .form-card-header {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0.85rem 1.1rem; background:var(--grey-50);
+    border-bottom:1px solid var(--grey-200);
+  }
+  .fch-left { display:flex; align-items:center; gap:12px; }
+  .sec-badge {
+    width:36px; height:36px; border-radius:9px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; flex-shrink:0;
+  }
+  .sec-badge.blue   { background:#dbeafe; color:var(--blue-600); }
+  .sec-badge.yellow { background:#fef9c3; color:#a16207; }
+  .sec-badge.green  { background:#dcfce7; color:#166534; }
+  .sec-badge.orange { background:#ffedd5; color:#9a3412; }
+  .sec-badge.purple { background:#f3e8ff; color:#7e22ce; }
+  .sec-badge.teal   { background:#ccfbf1; color:#115e59; }
+  .sec-name  { font-size:0.9rem; font-weight:700; color:var(--grey-700); }
+  .sec-desc  { font-size:0.73rem; color:var(--grey-400); margin-top:1px; }
+  .step-pill {
+    background:var(--blue-100); color:var(--blue-700);
+    border-radius:20px; padding:2px 10px;
+    font-size:0.7rem; font-weight:700; letter-spacing:0.5px;
+  }
+  .form-card-body { padding:1.1rem; }
+
+  /* ── Input with icon ── */
+  .ico-wrap { position:relative; }
+  .fld-ico {
+    position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    color:var(--grey-400); font-size:0.88rem; pointer-events:none; z-index:2;
+  }
+  .ico-input { padding-left:30px !important; }
+
+  /* ── Labels extras ── */
+  .utag {
+    font-size:0.63rem; font-weight:600;
+    background:var(--blue-100); color:var(--blue-700);
+    border-radius:4px; padding:1px 5px; margin-left:4px;
+    vertical-align:middle; text-transform:uppercase; letter-spacing:0.3px;
+  }
+  .req { color:#ef4444; margin-left:2px; }
+
+  /* ── Info Panel ── */
+  .info-panel {
+    background:linear-gradient(135deg,var(--blue-50),#f0f7ff);
+    border:1px solid var(--blue-100); border-radius:var(--radius-md); overflow:hidden;
+  }
+  .info-panel-hdr {
+    background:var(--blue-100); color:var(--blue-700);
+    font-size:0.75rem; font-weight:700; padding:0.5rem 1rem;
+    text-transform:uppercase; letter-spacing:0.5px;
+  }
+  .info-grid { display:grid; grid-template-columns:repeat(3,1fr); }
+  .info-cell {
+    padding:0.65rem 1rem;
+    border-right:1px solid var(--blue-100);
+  }
+  .info-cell:last-child { border-right:none; }
+  .info-lbl {
+    display:block; font-size:0.68rem; font-weight:600;
+    color:var(--grey-400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px;
+  }
+  .info-val { display:block; font-size:0.88rem; font-weight:700; color:var(--blue-800); }
+  @media(max-width:576px){
+    .info-grid { grid-template-columns:1fr 1fr; }
+    .info-cell:nth-child(2) { border-right:none; }
+    .info-cell:nth-child(3) { border-right:none; border-top:1px solid var(--blue-100); grid-column:1/-1; }
+  }
+
+  /* ── Module Grid ── */
+  .module-grid {
+    display:flex; align-items:center; gap:8px;
+    background:var(--grey-50); border:1px solid var(--grey-200);
+    border-radius:var(--radius-sm); padding:0.85rem 1rem;
+    flex-wrap:wrap;
+  }
+  .module-cell { flex:1; min-width:80px; }
+  .mcell-label {
+    font-size:0.72rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:0.5px; color:var(--grey-500); margin-bottom:6px;
+    display:flex; align-items:center; gap:5px;
+  }
+  .module-arrow {
+    font-size:1.3rem; color:var(--blue-400);
+    flex-shrink:0; padding-bottom:2px;
+  }
+  .total-cell   .form-control { border-color:var(--blue-300,#93c5fd); background:#eff6ff; font-weight:700; }
+  .working-cell .form-control { border-color:#86efac; background:#f0fdf4; }
+  .faulty-cell  .form-control { border-color:#fca5a5; background:#fef2f2; }
+  .spare-cell   .form-control { border-color:#cbd5e1; background:#f8fafc; }
+  .mdot {
+    display:inline-block; width:8px; height:8px;
+    border-radius:50%; flex-shrink:0;
+  }
+  .green-dot { background:#22c55e; }
+  .red-dot   { background:#ef4444; }
+  .grey-dot  { background:#94a3b8; }
+  @media(max-width:576px){
+    .module-grid { gap:6px; }
+    .module-arrow { display:none; }
+    .module-cell  { min-width:calc(50% - 10px); }
+  }
+
+  /* ── Condition select colour ── */
+  .cond-select.sel-good { border-color:#22c55e !important; background:#f0fdf4 !important; color:#166534 !important; }
+  .cond-select.sel-bad  { border-color:#ef4444 !important; background:#fef2f2 !important; color:#991b1b !important; }
+  .cond-select.sel-avg  { border-color:#f59e0b !important; background:#fffbeb !important; color:#92400e !important; }
+
+  /* ── Submit bar ── */
+  .submit-bar {
+    background:#fff; border:1px solid var(--grey-200);
+    border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
+    padding:0.9rem 1.1rem; margin-top:0.5rem;
+  }
+  .submit-inner {
+    display:flex; align-items:center;
+    justify-content:space-between; gap:12px; flex-wrap:wrap;
+  }
+  .submit-hint { font-size:0.78rem; color:var(--grey-500); display:flex; align-items:center; }
+  @media(max-width:576px){
+    .submit-inner { flex-direction:column; align-items:stretch; }
+    .submit-inner .d-flex { justify-content:stretch; }
+    .submit-inner .d-flex .btn-blue,
+    .submit-inner .d-flex .btn-outline-blue { flex:1; justify-content:center; }
+    .submit-hint { justify-content:center; margin-bottom:4px; }
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function () {
+
+  /* ── Select2 site search ── */
+  $('#site_select').select2({
+    theme: 'bootstrap-5',
+    placeholder: 'Type site name or Pkey to search...',
+    minimumInputLength: 1,
+    ajax: {
+      url: '/api/sites/',
+      dataType: 'json',
+      delay: 250,
+      data: function (p) { return { q: p.term || '' }; },
+      processResults: function (data) { return data; }
+    }
+  });
+
+  /* ── Populate site info panel on selection ── */
+  $('#site_select').on('select2:select', function (e) {
+    const s = e.params.data;
+    $('#site_code').text(s.site_code || '—');
+    $('#bss_incharge').text([s.bss_incharge_name, s.bss_incharge_mobile].filter(Boolean).join('  ·  ') || '—');
+    $('#technician').text([s.technician_name, s.technician_mobile].filter(Boolean).join('  ·  ') || '—');
+    $('#site_preview').slideDown(250);
+  });
+
+  /* ── Colour condition selects on change ── */
+  function colorCond(el) {
+    const v = $(el).val();
+    $(el).removeClass('sel-good sel-bad sel-avg');
+    if (v === 'working' || v === 'good' || v === 'Yes')       $(el).addClass('sel-good');
+    else if (v === 'not_working' || v === 'poor')             $(el).addClass('sel-bad');
+    else if (v === 'not_available' || v === 'average' || v === 'No') $(el).addClass('sel-avg');
+  }
+  $('.cond-select, select[name="discharge_test_conducted"], select[name="battery_cleanliness"]')
+    .on('change', function () { colorCond(this); });
+
+  /* ── Module total validation indicator ── */
+  function checkModules() {
+    const total   = parseInt($('input[name="total_modules"]').val()) || 0;
+    const working = parseInt($('input[name="working_modules"]').val()) || 0;
+    const faulty  = parseInt($('input[name="faulty_modules"]').val()) || 0;
+    const spare   = parseInt($('input[name="spare_modules"]').val()) || 0;
+    const sum = working + faulty + spare;
+    const totalInput = $('input[name="total_modules"]');
+    totalInput.toggleClass('is-invalid', total > 0 && sum !== total);
+    totalInput.toggleClass('border-success', total > 0 && sum === total);
+  }
+  $('input[name="total_modules"], input[name="working_modules"], input[name="faulty_modules"], input[name="spare_modules"]')
+    .on('input', checkModules);
+
+});
+</script>
+{% endblock %}

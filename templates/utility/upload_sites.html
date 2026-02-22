@@ -1,0 +1,50 @@
+{% extends "utility/base.html" %}
+
+{% block title %}Upload Sites{% endblock %}
+{% block header %}Upload Sites (Excel Import){% endblock %}
+
+{% block content %}
+
+{% if messages %}
+  <ul>
+    {% for message in messages %}
+      <li style="margin-bottom:6px; color:{% if message.tags == 'error' %}red{% else %}green{% endif %};">
+        {{ message }}
+      </li>
+    {% endfor %}
+  </ul>
+  <hr>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+
+  <div class="row">
+    <label>Select Excel File (.xlsx)</label>
+    {{ form.file }}
+  </div>
+
+  <div class="row">
+    <label>Sheet name (optional)</label>
+    {{ form.sheet }}
+    <div style="font-size:12px;color:#666;">Example: Sites</div>
+  </div>
+
+  <div class="row">
+    <label>Header row (default 1)</label>
+    {{ form.header_row }}
+  </div>
+
+  <button class="btn" type="submit">Upload & Import</button>
+</form>
+
+<hr>
+<p><b>Expected columns (any of these names are accepted):</b></p>
+<ul>
+  <li>site_name / site name</li>
+  <li>site_code / pkey</li>
+  <li>bss_incharge_name, bss_incharge_mobile</li>
+  <li>technician_name, technician_mobile</li>
+</ul>
+
+{% endblock %}
