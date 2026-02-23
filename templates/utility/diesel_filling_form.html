@@ -1,76 +1,74 @@
 {% extends "utility/base.html" %}
 {% block title %}Diesel Filling Entry — BSSutility{% endblock %}
 {% block nav_diesel %}active{% endblock %}
-{% block mob_diesel %}active{% endblock %}
 
 {% block content %}
 
 <!-- ══════════ PAGE HEADER ══════════ -->
-<div class="page-header" style="background:linear-gradient(135deg,#1e3a5f 0%,#1a5fd4 60%,#2979ff 100%);">
-  <div class="page-header-title">
-    <div class="ph-icon" style="background:rgba(255,255,255,.18);">
+<div class="page-header" style="background:linear-gradient(135deg,#1e3a5f 0%,#1a5fd4 60%,#2979ff 100%); padding:14px 16px; border-radius:12px; color:#fff; margin-bottom:14px;">
+  <div class="page-header-title" style="display:flex; align-items:center; gap:12px;">
+    <div class="ph-icon" style="width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.18);">
       <i class="bi bi-fuel-pump-fill"></i>
     </div>
-    <div>
+    <div style="font-weight:700;font-size:1.05rem;">
       Diesel Filling Entry
-      <span class="ph-sub">Record fuel addition details for the selected site</span>
+      <div class="ph-sub" style="font-weight:500;font-size:.8rem;opacity:.85;">Record fuel addition details for the selected site</div>
     </div>
   </div>
-  <a href="/diesel/" class="btn-outline-blue d-none d-md-inline-flex"
-     style="background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff;">
-    <i class="bi bi-table"></i> View Records
-  </a>
 </div>
 
 <form method="post" novalidate id="diesel-form">
   {% csrf_token %}
 
   <!-- ══════════ 01 — SITE & DATE ══════════ -->
-  <div class="form-card">
-    <div class="form-card-header">
-      <div class="fch-left">
-        <div class="sec-badge blue"><i class="bi bi-geo-alt-fill"></i></div>
+  <div class="form-card" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;overflow:hidden;">
+    <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#f9fafb;border-bottom:1px solid #e5e7eb;">
+      <div class="fch-left" style="display:flex;align-items:center;gap:10px;">
+        <div class="sec-badge blue" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#dbeafe;color:#2563eb;">
+          <i class="bi bi-geo-alt-fill"></i>
+        </div>
         <div>
-          <div class="sec-name">Site &amp; Date</div>
-          <div class="sec-desc">Select the site and filling date</div>
+          <div class="sec-name" style="font-weight:800;color:#374151;">Site &amp; Date</div>
+          <div class="sec-desc" style="font-size:.75rem;color:#6b7280;">Select the site and filling date</div>
         </div>
       </div>
-      <span class="step-pill">01</span>
+      <span class="step-pill" style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:800;">01</span>
     </div>
-    <div class="form-card-body">
+
+    <div class="form-card-body" style="padding:14px;">
       <div class="row g-3">
         <div class="col-12 col-md-8">
-          <label class="form-label">Site Name <span class="req">*</span></label>
+          <label class="form-label" style="font-weight:700;">Site Name <span class="req" style="color:#ef4444;">*</span></label>
           <select id="site_select" name="site" style="width:100%"></select>
-          {% if form.site.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.site.errors }}</div>{% endif %}
+          {% if form.site.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.site.errors }}</div>{% endif %}
         </div>
+
         <div class="col-12 col-md-4">
-          <label class="form-label">Date of Filling <span class="req">*</span></label>
-          <div class="ico-wrap">
-            <i class="bi bi-calendar3 fld-ico"></i>
-            <input type="date" name="date_of_filling"
-                   value="{{ form.date_of_filling.value|default:'' }}"
-                   class="form-control ico-input{% if form.date_of_filling.errors %} is-invalid{% endif %}">
-          </div>
-          {% if form.date_of_filling.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.date_of_filling.errors }}</div>{% endif %}
+          <label class="form-label" style="font-weight:700;">Date of Filling <span class="req" style="color:#ef4444;">*</span></label>
+          <input type="date" name="date_of_filling"
+                 value="{{ form.date_of_filling.value|default:'' }}"
+                 class="form-control{% if form.date_of_filling.errors %} is-invalid{% endif %}">
+          {% if form.date_of_filling.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.date_of_filling.errors }}</div>{% endif %}
         </div>
       </div>
 
       <!-- Site Info Preview -->
-      <div class="info-panel mt-3" id="site_preview" style="display:none;">
-        <div class="info-panel-hdr"><i class="bi bi-info-circle-fill me-2"></i>Site Information</div>
-        <div class="info-grid">
-          <div class="info-cell">
-            <span class="info-lbl">Site Code</span>
-            <span class="info-val" id="site_code">—</span>
+      <div class="info-panel mt-3" id="site_preview" style="display:none; margin-top:12px; background:#eff6ff; border:1px solid #bfdbfe; border-radius:12px; overflow:hidden;">
+        <div class="info-panel-hdr" style="background:#dbeafe;color:#1d4ed8;font-size:.78rem;font-weight:800;padding:8px 12px;">
+          <i class="bi bi-info-circle-fill me-2"></i>Site Information
+        </div>
+        <div class="info-grid" style="display:grid;grid-template-columns:repeat(3,1fr);">
+          <div class="info-cell" style="padding:10px 12px;border-right:1px solid #bfdbfe;">
+            <span class="info-lbl" style="display:block;font-size:.68rem;color:#6b7280;font-weight:700;">Site Code</span>
+            <span class="info-val" id="site_code" style="font-weight:800;color:#1e3a8a;">—</span>
           </div>
-          <div class="info-cell">
-            <span class="info-lbl">BSS Incharge</span>
-            <span class="info-val" id="bss_incharge">—</span>
+          <div class="info-cell" style="padding:10px 12px;border-right:1px solid #bfdbfe;">
+            <span class="info-lbl" style="display:block;font-size:.68rem;color:#6b7280;font-weight:700;">BSS Incharge</span>
+            <span class="info-val" id="bss_incharge" style="font-weight:800;color:#1e3a8a;">—</span>
           </div>
-          <div class="info-cell">
-            <span class="info-lbl">Technician</span>
-            <span class="info-val" id="technician">—</span>
+          <div class="info-cell" style="padding:10px 12px;">
+            <span class="info-lbl" style="display:block;font-size:.68rem;color:#6b7280;font-weight:700;">Technician</span>
+            <span class="info-val" id="technician" style="font-weight:800;color:#1e3a8a;">—</span>
           </div>
         </div>
       </div>
@@ -78,159 +76,116 @@
   </div>
 
   <!-- ══════════ 02 — FUEL LEVELS ══════════ -->
-  <div class="form-card">
-    <div class="form-card-header">
-      <div class="fch-left">
-        <div class="sec-badge orange"><i class="bi bi-droplet-fill"></i></div>
+  <div class="form-card" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;overflow:hidden;">
+    <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#f9fafb;border-bottom:1px solid #e5e7eb;">
+      <div class="fch-left" style="display:flex;align-items:center;gap:10px;">
+        <div class="sec-badge orange" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#ffedd5;color:#9a3412;">
+          <i class="bi bi-droplet-fill"></i>
+        </div>
         <div>
-          <div class="sec-name">Fuel Levels</div>
-          <div class="sec-desc">Tank balance before and after filling</div>
+          <div class="sec-name" style="font-weight:800;color:#374151;">Fuel Levels</div>
+          <div class="sec-desc" style="font-size:.75rem;color:#6b7280;">Tank balance before and after filling</div>
         </div>
       </div>
-      <span class="step-pill">02</span>
+      <span class="step-pill" style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:800;">02</span>
     </div>
-    <div class="form-card-body">
 
+    <div class="form-card-body" style="padding:14px;">
       {% if form.non_field_errors %}
-      <div class="alert alert-danger mb-3">
-        <i class="bi bi-exclamation-triangle-fill mt-1"></i>
-        <div>{{ form.non_field_errors }}</div>
-      </div>
+        <div class="alert alert-danger mb-3">{{ form.non_field_errors }}</div>
       {% endif %}
 
-      <!-- Fuel Flow Diagram -->
-      <div class="fuel-flow">
-
-        <div class="fuel-box f-before">
-          <div class="fb-title"><i class="bi bi-fuel-pump me-1"></i>Balance Before</div>
-          <div class="ico-wrap">
-            <i class="bi bi-droplet fld-ico"></i>
-            <input type="number" name="balance_before" step="0.01"
-                   value="{{ form.balance_before.value|default:'' }}"
-                   placeholder="0.00" class="form-control ico-input" id="id_balance_before">
-          </div>
-          <div class="fb-unit">Litres</div>
-          {% if form.balance_before.errors %}<div class="field-error">{{ form.balance_before.errors }}</div>{% endif %}
+      <div class="fuel-flow" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+        <!-- Balance Before = balance_on_tank -->
+        <div class="fuel-box f-before" style="flex:1;min-width:160px;padding:12px;border-radius:12px;border:1.5px solid #93c5fd;background:#eff6ff;">
+          <div class="fb-title" style="font-size:.75rem;font-weight:800;color:#1d4ed8;margin-bottom:6px;">Balance Before</div>
+          <input type="number" name="balance_on_tank" step="0.01"
+                 value="{{ form.balance_on_tank.value|default:'' }}"
+                 placeholder="0.00" class="form-control" id="id_balance_on_tank">
+          <div class="fb-unit" style="font-size:.72rem;color:#6b7280;text-align:right;margin-top:4px;">Litres</div>
+          {% if form.balance_on_tank.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.balance_on_tank.errors }}</div>{% endif %}
         </div>
 
-        <div class="fuel-op plus-op">
-          <i class="bi bi-plus-circle-fill"></i>
+        <div class="fuel-op plus-op" style="font-size:1.4rem;color:#f59e0b;">+</div>
+
+        <!-- Diesel Filled = diesel_filled -->
+        <div class="fuel-box f-filled" style="flex:1;min-width:160px;padding:12px;border-radius:12px;border:1.5px solid #fcd34d;background:#fffbeb;">
+          <div class="fb-title" style="font-size:.75rem;font-weight:800;color:#b45309;margin-bottom:6px;">Diesel Filled</div>
+          <input type="number" name="diesel_filled" step="0.01"
+                 value="{{ form.diesel_filled.value|default:'' }}"
+                 placeholder="0.00" class="form-control" id="id_diesel_filled">
+          <div class="fb-unit" style="font-size:.72rem;color:#6b7280;text-align:right;margin-top:4px;">Litres</div>
+          {% if form.diesel_filled.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.diesel_filled.errors }}</div>{% endif %}
         </div>
 
-        <div class="fuel-box f-filled">
-          <div class="fb-title"><i class="bi bi-truck me-1"></i>Diesel Filled</div>
-          <div class="ico-wrap">
-            <i class="bi bi-plus-slash-minus fld-ico"></i>
-            <input type="number" name="diesel_filled" step="0.01"
-                   value="{{ form.diesel_filled.value|default:'' }}"
-                   placeholder="0.00" class="form-control ico-input" id="id_diesel_filled">
-          </div>
-          <div class="fb-unit">Litres</div>
-          {% if form.diesel_filled.errors %}<div class="field-error">{{ form.diesel_filled.errors }}</div>{% endif %}
-        </div>
+        <div class="fuel-op eq-op" style="font-size:1.4rem;color:#22c55e;">→</div>
 
-        <div class="fuel-op eq-op">
-          <i class="bi bi-arrow-right-circle-fill"></i>
+        <!-- Balance After = balance_after_filling -->
+        <div class="fuel-box f-after" style="flex:1;min-width:160px;padding:12px;border-radius:12px;border:1.5px solid #86efac;background:#f0fdf4;">
+          <div class="fb-title" style="font-size:.75rem;font-weight:800;color:#15803d;margin-bottom:6px;">Balance After</div>
+          <input type="number" name="balance_after_filling" step="0.01"
+                 value="{{ form.balance_after_filling.value|default:'' }}"
+                 placeholder="0.00" class="form-control" id="id_balance_after_filling">
+          <div class="fb-unit" style="font-size:.72rem;color:#6b7280;text-align:right;margin-top:4px;">Litres</div>
+          {% if form.balance_after_filling.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.balance_after_filling.errors }}</div>{% endif %}
         </div>
-
-        <div class="fuel-box f-after">
-          <div class="fb-title"><i class="bi bi-check-circle me-1"></i>Balance After</div>
-          <div class="ico-wrap">
-            <i class="bi bi-droplet-fill fld-ico"></i>
-            <input type="number" name="balance_after" step="0.01"
-                   value="{{ form.balance_after.value|default:'' }}"
-                   placeholder="0.00" class="form-control ico-input" id="id_balance_after">
-          </div>
-          <div class="fb-unit">Litres</div>
-          {% if form.balance_after.errors %}<div class="field-error">{{ form.balance_after.errors }}</div>{% endif %}
-        </div>
-
       </div>
 
-      <!-- Auto-calc banner -->
-      <div class="calc-banner" id="calc_banner" style="display:none;">
+      <div class="calc-banner" id="calc_banner" style="display:none; margin-top:10px; background:#ecfdf5; border:1px solid #86efac; border-radius:10px; padding:10px 12px; color:#166534;">
         <i class="bi bi-calculator-fill me-2"></i>
         Auto-calculated balance:
         <strong id="calc_balance_display">—</strong>
-        <span class="calc-note">· Balance After = Before + Filled</span>
+        <span class="calc-note" style="opacity:.8;">· Balance After = Before + Filled</span>
       </div>
-
     </div>
   </div>
 
   <!-- ══════════ 03 — METER READINGS ══════════ -->
-  <div class="form-card">
-    <div class="form-card-header">
-      <div class="fch-left">
-        <div class="sec-badge green"><i class="bi bi-speedometer2"></i></div>
+  <div class="form-card" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);margin-bottom:14px;overflow:hidden;">
+    <div class="form-card-header" style="display:flex;align-items:center;justify-content:space-between;padding:12px 14px;background:#f9fafb;border-bottom:1px solid #e5e7eb;">
+      <div class="fch-left" style="display:flex;align-items:center;gap:10px;">
+        <div class="sec-badge green" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#dcfce7;color:#166534;">
+          <i class="bi bi-speedometer2"></i>
+        </div>
         <div>
-          <div class="sec-name">Meter Readings</div>
-          <div class="sec-desc">DG meter readings at the time of filling</div>
+          <div class="sec-name" style="font-weight:800;color:#374151;">Meter Readings</div>
+          <div class="sec-desc" style="font-size:.75rem;color:#6b7280;">DG meter readings at the time of filling</div>
         </div>
       </div>
-      <span class="step-pill">03</span>
+      <span class="step-pill" style="background:#dbeafe;color:#1d4ed8;border-radius:20px;padding:2px 10px;font-size:.72rem;font-weight:800;">03</span>
     </div>
-    <div class="form-card-body">
+
+    <div class="form-card-body" style="padding:14px;">
       <div class="row g-3">
         <div class="col-12 col-md-6">
-          <label class="form-label">Hour Meter Reading <span class="utag">hrs</span></label>
-          <div class="ico-wrap">
-            <i class="bi bi-clock fld-ico"></i>
-            <input type="number" name="hour_meter_reading" step="0.01"
-                   value="{{ form.hour_meter_reading.value|default:'' }}"
-                   placeholder="0.00" class="form-control ico-input">
-          </div>
-          {% if form.hour_meter_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.hour_meter_reading.errors }}</div>{% endif %}
+          <label class="form-label" style="font-weight:700;">Hour Meter Reading</label>
+          <input type="number" name="hour_meter_reading" step="0.01"
+                 value="{{ form.hour_meter_reading.value|default:'' }}"
+                 placeholder="0.00" class="form-control" id="id_hour_meter_reading">
+          {% if form.hour_meter_reading.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.hour_meter_reading.errors }}</div>{% endif %}
         </div>
-        <div class="col-12 col-md-6">
-          <label class="form-label">KWH Reading <span class="utag">kWh</span></label>
-          <div class="ico-wrap">
-            <i class="bi bi-lightning-charge fld-ico"></i>
-            <input type="number" name="kwh_reading" step="0.01"
-                   value="{{ form.kwh_reading.value|default:'' }}"
-                   placeholder="0.00" class="form-control ico-input">
-          </div>
-          {% if form.kwh_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.kwh_reading.errors }}</div>{% endif %}
-        </div>
-      </div>
-    </div>
-  </div>
 
-  <!-- ══════════ SUMMARY CARD ══════════ -->
-  <div class="summary-card" id="summary_card" style="display:none;">
-    <div class="summary-hdr">
-      <i class="bi bi-clipboard-data-fill me-2"></i>Entry Summary
-    </div>
-    <div class="summary-grid">
-      <div class="sum-cell">
-        <span class="sum-lbl">Site</span>
-        <span class="sum-val" id="sum_site">—</span>
-      </div>
-      <div class="sum-cell">
-        <span class="sum-lbl">Date</span>
-        <span class="sum-val" id="sum_date">—</span>
-      </div>
-      <div class="sum-cell">
-        <span class="sum-lbl">Diesel Filled</span>
-        <span class="sum-val hi" id="sum_filled">—</span>
-      </div>
-      <div class="sum-cell">
-        <span class="sum-lbl">Final Balance</span>
-        <span class="sum-val hi" id="sum_balance">—</span>
+        <div class="col-12 col-md-6">
+          <label class="form-label" style="font-weight:700;">KWH Reading</label>
+          <input type="number" name="kwh" step="0.01"
+                 value="{{ form.kwh.value|default:'' }}"
+                 placeholder="0.00" class="form-control" id="id_kwh">
+          {% if form.kwh.errors %}<div class="field-error" style="color:#dc2626;margin-top:6px;">{{ form.kwh.errors }}</div>{% endif %}
+        </div>
       </div>
     </div>
   </div>
 
   <!-- ══════════ SUBMIT BAR ══════════ -->
-  <div class="submit-bar">
-    <div class="submit-inner">
-      <div class="submit-hint">
+  <div class="submit-bar" style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:12px 14px;">
+    <div class="submit-inner" style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <div class="submit-hint" style="font-size:.82rem;color:#6b7280;">
         <i class="bi bi-shield-check text-success me-2"></i>
         All data is saved securely to the database
       </div>
-      <div class="d-flex gap-2">
-        <a href="/" class="btn-outline-blue"><i class="bi bi-x-circle"></i> Cancel</a>
-        <button type="submit" class="btn-blue">
+      <div style="display:flex;gap:10px;">
+        <a href="/" class="btn btn-outline-primary">Cancel</a>
+        <button type="submit" class="btn btn-primary">
           <i class="bi bi-check-circle-fill"></i> Save Diesel Record
         </button>
       </div>
@@ -239,187 +194,15 @@
 
 </form>
 
-<style>
-  /* ── Form Card ── */
-  .form-card {
-    background:#fff; border:1px solid var(--grey-200);
-    border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
-    margin-bottom:1rem; overflow:hidden; transition:box-shadow .2s;
-  }
-  .form-card:hover { box-shadow:var(--shadow-md); }
-  .form-card-header {
-    display:flex; align-items:center; justify-content:space-between;
-    padding:0.85rem 1.1rem; background:var(--grey-50);
-    border-bottom:1px solid var(--grey-200);
-  }
-  .fch-left { display:flex; align-items:center; gap:12px; }
-  .sec-badge {
-    width:36px; height:36px; border-radius:9px;
-    display:flex; align-items:center; justify-content:center;
-    font-size:1rem; flex-shrink:0;
-  }
-  .sec-badge.blue   { background:#dbeafe; color:var(--blue-600); }
-  .sec-badge.orange { background:#ffedd5; color:#9a3412; }
-  .sec-badge.green  { background:#dcfce7; color:#166534; }
-  .sec-name  { font-size:0.9rem; font-weight:700; color:var(--grey-700); }
-  .sec-desc  { font-size:0.73rem; color:var(--grey-400); margin-top:1px; }
-  .step-pill {
-    background:var(--blue-100); color:var(--blue-700);
-    border-radius:20px; padding:2px 10px;
-    font-size:0.7rem; font-weight:700; letter-spacing:0.5px;
-  }
-  .form-card-body { padding:1.1rem; }
-
-  /* ── Input with icon ── */
-  .ico-wrap { position:relative; }
-  .fld-ico {
-    position:absolute; left:10px; top:50%; transform:translateY(-50%);
-    color:var(--grey-400); font-size:0.88rem; pointer-events:none; z-index:2;
-  }
-  .ico-input { padding-left:30px !important; }
-
-  /* ── Labels ── */
-  .utag {
-    font-size:0.63rem; font-weight:600;
-    background:var(--blue-100); color:var(--blue-700);
-    border-radius:4px; padding:1px 5px; margin-left:4px;
-    vertical-align:middle; text-transform:uppercase; letter-spacing:0.3px;
-  }
-  .req { color:#ef4444; margin-left:2px; }
-
-  /* ── Info Panel ── */
-  .info-panel {
-    background:linear-gradient(135deg,var(--blue-50),#f0f7ff);
-    border:1px solid var(--blue-100); border-radius:var(--radius-md); overflow:hidden;
-  }
-  .info-panel-hdr {
-    background:var(--blue-100); color:var(--blue-700);
-    font-size:0.75rem; font-weight:700; padding:0.5rem 1rem;
-    text-transform:uppercase; letter-spacing:0.5px;
-  }
-  .info-grid { display:grid; grid-template-columns:repeat(3,1fr); }
-  .info-cell { padding:0.65rem 1rem; border-right:1px solid var(--blue-100); }
-  .info-cell:last-child { border-right:none; }
-  .info-lbl {
-    display:block; font-size:0.68rem; font-weight:600;
-    color:var(--grey-400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px;
-  }
-  .info-val { display:block; font-size:0.88rem; font-weight:700; color:var(--blue-800); }
-  @media(max-width:576px){
-    .info-grid { grid-template-columns:1fr 1fr; }
-    .info-cell:nth-child(2) { border-right:none; }
-    .info-cell:nth-child(3) { border-right:none; border-top:1px solid var(--blue-100); grid-column:1/-1; }
-  }
-
-  /* ── Fuel Flow ── */
-  .fuel-flow {
-    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
-  }
-  .fuel-box {
-    flex:1; min-width:140px; padding:0.85rem 0.9rem;
-    border-radius:var(--radius-sm); border:1.5px solid;
-  }
-  .f-before { background:#eff6ff; border-color:#93c5fd; }
-  .f-filled { background:#fffbeb; border-color:#fcd34d; }
-  .f-after  { background:#f0fdf4; border-color:#86efac; }
-  .fb-title {
-    font-size:0.72rem; font-weight:700;
-    text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px;
-  }
-  .f-before .fb-title { color:#1d4ed8; }
-  .f-filled .fb-title { color:#b45309; }
-  .f-after  .fb-title { color:#15803d; }
-  .fb-unit {
-    font-size:0.68rem; color:var(--grey-400);
-    text-align:right; margin-top:5px;
-  }
-  .fuel-op { font-size:1.5rem; flex-shrink:0; padding-top:26px; }
-  .plus-op { color:#f59e0b; }
-  .eq-op   { color:#22c55e; }
-
-  /* Colour feedback on fuel inputs */
-  .fuel-low  { border-color:#ef4444 !important; background:#fef2f2 !important; }
-  .fuel-mid  { border-color:#f59e0b !important; background:#fffbeb !important; }
-  .fuel-high { border-color:#22c55e !important; background:#f0fdf4 !important; }
-
-  @media(max-width:576px){
-    .fuel-box  { min-width:calc(50% - 16px); }
-    .fuel-op   { padding-top:14px; font-size:1.2rem; }
-  }
-
-  /* ── Calc Banner ── */
-  .calc-banner {
-    background:linear-gradient(135deg,#ecfdf5,#f0fdf4);
-    border:1px solid #86efac; border-radius:var(--radius-sm);
-    padding:0.65rem 1rem; margin-top:0.9rem;
-    font-size:0.84rem; color:#166534;
-    display:flex; align-items:center; flex-wrap:wrap; gap:5px;
-  }
-  .calc-banner strong { font-weight:800; font-size:1rem; }
-  .calc-note { color:#4ade80; font-size:0.72rem; margin-left:4px; }
-
-  /* ── Summary Card ── */
-  .summary-card {
-    background:linear-gradient(135deg,var(--blue-800),var(--blue-700));
-    border-radius:var(--radius-md); overflow:hidden;
-    margin-bottom:1rem; box-shadow:var(--shadow-md);
-  }
-  .summary-hdr {
-    padding:0.65rem 1.1rem;
-    font-size:0.78rem; font-weight:700;
-    text-transform:uppercase; letter-spacing:0.8px;
-    color:rgba(255,255,255,.55);
-    border-bottom:1px solid rgba(255,255,255,.07);
-  }
-  .summary-grid { display:grid; grid-template-columns:repeat(4,1fr); }
-  .sum-cell {
-    padding:0.75rem 1rem;
-    border-right:1px solid rgba(255,255,255,.07);
-  }
-  .sum-cell:last-child { border-right:none; }
-  .sum-lbl {
-    display:block; font-size:0.67rem; font-weight:600;
-    color:rgba(255,255,255,.42); text-transform:uppercase;
-    letter-spacing:0.5px; margin-bottom:4px;
-  }
-  .sum-val { display:block; font-size:0.92rem; font-weight:700; color:#fff; }
-  .sum-val.hi { color:#4ade80; font-size:1rem; }
-  @media(max-width:576px){
-    .summary-grid { grid-template-columns:1fr 1fr; }
-    .sum-cell:nth-child(2) { border-right:none; }
-    .sum-cell:nth-child(3) { border-top:1px solid rgba(255,255,255,.07); }
-    .sum-cell:nth-child(4) { border-right:none; border-top:1px solid rgba(255,255,255,.07); }
-  }
-
-  /* ── Submit Bar ── */
-  .submit-bar {
-    background:#fff; border:1px solid var(--grey-200);
-    border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
-    padding:0.9rem 1.1rem; margin-top:0.5rem;
-  }
-  .submit-inner {
-    display:flex; align-items:center;
-    justify-content:space-between; gap:12px; flex-wrap:wrap;
-  }
-  .submit-hint { font-size:0.78rem; color:var(--grey-500); display:flex; align-items:center; }
-  @media(max-width:576px){
-    .submit-inner { flex-direction:column; align-items:stretch; }
-    .submit-inner .d-flex { justify-content:stretch; }
-    .submit-inner .d-flex .btn-blue,
-    .submit-inner .d-flex .btn-outline-blue { flex:1; justify-content:center; }
-    .submit-hint { justify-content:center; margin-bottom:4px; }
-  }
-</style>
 {% endblock %}
 
 {% block extra_js %}
 <script>
 $(document).ready(function () {
 
-  /* ── Select2 site search ── */
+  // Select2 site search
   $('#site_select').select2({
-    theme: 'bootstrap-5',
-    placeholder: 'Type site name or Pkey to search...',
+    placeholder: 'Type site name to search...',
     minimumInputLength: 1,
     ajax: {
       url: '/api/sites/',
@@ -430,56 +213,31 @@ $(document).ready(function () {
     }
   });
 
-  /* ── Site selected ── */
+  // Site selected
   $('#site_select').on('select2:select', function (e) {
     const s = e.params.data;
     $('#site_code').text(s.site_code || '—');
     $('#bss_incharge').text([s.bss_incharge_name, s.bss_incharge_mobile].filter(Boolean).join('  ·  ') || '—');
     $('#technician').text([s.technician_name, s.technician_mobile].filter(Boolean).join('  ·  ') || '—');
-    $('#site_preview').slideDown(250);
-    $('#sum_site').text(s.text || '—');
-    updateSummary();
+    $('#site_preview').slideDown(200);
   });
 
-  /* ── Auto-calculate balance ── */
+  // Auto-calculate balance_after_filling = balance_on_tank + diesel_filled
   function calcBalance() {
-    const before = parseFloat($('#id_balance_before').val()) || 0;
-    const filled = parseFloat($('#id_diesel_filled').val())  || 0;
+    const before = parseFloat($('#id_balance_on_tank').val()) || 0;
+    const filled = parseFloat($('#id_diesel_filled').val()) || 0;
+
     if (before > 0 || filled > 0) {
       const total = (before + filled).toFixed(2);
       $('#calc_balance_display').text(total + ' L');
-      $('#calc_banner').slideDown(200);
-      if (!$('#id_balance_after').val()) $('#id_balance_after').val(total);
-      updateSummary();
+      $('#calc_banner').slideDown(120);
+      if (!$('#id_balance_after_filling').val()) $('#id_balance_after_filling').val(total);
+    } else {
+      $('#calc_banner').hide();
     }
   }
 
-  function updateSummary() {
-    const filled  = $('#id_diesel_filled').val();
-    const after   = $('#id_balance_after').val();
-    const dateVal = $('input[name="date_of_filling"]').val();
-    if (filled || after) {
-      $('#sum_date').text(dateVal || '—');
-      $('#sum_filled').text(filled  ? filled  + ' L' : '—');
-      $('#sum_balance').text(after  ? after   + ' L' : '—');
-      $('#summary_card').slideDown(250);
-    }
-  }
-
-  $('#id_balance_before, #id_diesel_filled').on('input', calcBalance);
-  $('input[name="balance_after"], input[name="date_of_filling"]').on('change input', updateSummary);
-
-  /* ── Fuel level colour feedback ── */
-  function fuelColor(input) {
-    const v = parseFloat($(input).val());
-    $(input).removeClass('fuel-low fuel-mid fuel-high');
-    if (!isNaN(v) && v > 0) {
-      if      (v < 50)  $(input).addClass('fuel-low');
-      else if (v < 200) $(input).addClass('fuel-mid');
-      else              $(input).addClass('fuel-high');
-    }
-  }
-  $('#id_balance_before, #id_balance_after, #id_diesel_filled').on('input', function () { fuelColor(this); });
+  $('#id_balance_on_tank, #id_diesel_filled').on('input', calcBalance);
 
 });
 </script>

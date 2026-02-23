@@ -96,6 +96,7 @@
           </div>
           {% if form.eb_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.eb_reading.errors }}</div>{% endif %}
         </div>
+
         <div class="col-6 col-md-4">
           <label class="form-label">DG KWH Reading <span class="utag">kWh</span></label>
           <div class="ico-wrap">
@@ -106,6 +107,7 @@
           </div>
           {% if form.dg_kwh_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.dg_kwh_reading.errors }}</div>{% endif %}
         </div>
+
         <div class="col-6 col-md-4">
           <label class="form-label">Hour Meter Reading <span class="utag">hrs</span></label>
           <div class="ico-wrap">
@@ -142,11 +144,14 @@
             <option value="manual" {% if form.dg_status.value == "manual" %}selected{% endif %}>Manual</option>
             <option value="faulty" {% if form.dg_status.value == "faulty" %}selected{% endif %}>Faulty</option>
           </select>
+          {% if form.dg_status.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.dg_status.errors }}</div>{% endif %}
         </div>
+
         <div class="col-12 col-md-8">
           <label class="form-label">DG Remarks</label>
           <textarea name="dg_remarks" rows="2" class="form-control"
                     placeholder="Any remarks about the DG...">{{ form.dg_remarks.value|default:'' }}</textarea>
+          {% if form.dg_remarks.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.dg_remarks.errors }}</div>{% endif %}
         </div>
       </div>
     </div>
@@ -176,7 +181,9 @@
                    value="{{ form.dc_load_kw.value|default:'' }}"
                    placeholder="0.00" class="form-control ico-input">
           </div>
+          {% if form.dc_load_kw.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.dc_load_kw.errors }}</div>{% endif %}
         </div>
+
         <div class="col-6 col-md-4">
           <label class="form-label">Powerplant Max Modules</label>
           <div class="ico-wrap">
@@ -185,41 +192,50 @@
                    value="{{ form.powerplant_max_modules.value|default:'' }}"
                    placeholder="0" class="form-control ico-input">
           </div>
+          {% if form.powerplant_max_modules.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.powerplant_max_modules.errors }}</div>{% endif %}
         </div>
       </div>
 
-      <!-- Module count grid -->
+      <!-- Module count grid (MODEL FIELD NAMES) -->
       <div class="module-grid">
         <div class="module-cell total-cell">
           <div class="mcell-label"><i class="bi bi-grid me-1"></i>Total Modules</div>
-          <input type="number" name="total_modules"
-                 value="{{ form.total_modules.value|default:'' }}"
+          <input type="number" name="modules_total"
+                 value="{{ form.modules_total.value|default:'' }}"
                  placeholder="0" class="form-control text-center fw-bold">
+          {% if form.modules_total.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.modules_total.errors }}</div>{% endif %}
         </div>
+
         <div class="module-arrow"><i class="bi bi-arrow-right-circle-fill"></i></div>
+
         <div class="module-cell working-cell">
           <div class="mcell-label">
             <span class="mdot green-dot"></span> Working
           </div>
-          <input type="number" name="working_modules"
-                 value="{{ form.working_modules.value|default:'' }}"
+          <input type="number" name="modules_working"
+                 value="{{ form.modules_working.value|default:'' }}"
                  placeholder="0" class="form-control text-center">
+          {% if form.modules_working.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.modules_working.errors }}</div>{% endif %}
         </div>
+
         <div class="module-cell faulty-cell">
           <div class="mcell-label">
             <span class="mdot red-dot"></span> Faulty
           </div>
-          <input type="number" name="faulty_modules"
-                 value="{{ form.faulty_modules.value|default:'' }}"
+          <input type="number" name="modules_faulty"
+                 value="{{ form.modules_faulty.value|default:'' }}"
                  placeholder="0" class="form-control text-center">
+          {% if form.modules_faulty.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.modules_faulty.errors }}</div>{% endif %}
         </div>
+
         <div class="module-cell spare-cell">
           <div class="mcell-label">
             <span class="mdot grey-dot"></span> Spare
           </div>
-          <input type="number" name="spare_modules"
-                 value="{{ form.spare_modules.value|default:'' }}"
+          <input type="number" name="modules_spare"
+                 value="{{ form.modules_spare.value|default:'' }}"
                  placeholder="0" class="form-control text-center">
+          {% if form.modules_spare.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.modules_spare.errors }}</div>{% endif %}
         </div>
       </div>
 
@@ -248,23 +264,30 @@
                    value="{{ form.battery_backup_hours.value|default:'' }}"
                    placeholder="0.00" class="form-control ico-input">
           </div>
+          {% if form.battery_backup_hours.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.battery_backup_hours.errors }}</div>{% endif %}
         </div>
+
+        <!-- BooleanField: use True/False -->
         <div class="col-6 col-md-4">
           <label class="form-label">Discharge Test Conducted</label>
           <select name="discharge_test_conducted" class="form-select">
             <option value="">— Select —</option>
-            <option value="Yes" {% if form.discharge_test_conducted.value == "Yes" %}selected{% endif %}>Yes</option>
-            <option value="No"  {% if form.discharge_test_conducted.value == "No"  %}selected{% endif %}>No</option>
+            <option value="True"  {% if form.discharge_test_conducted.value|stringformat:"s" == "True" %}selected{% endif %}>Yes</option>
+            <option value="False" {% if form.discharge_test_conducted.value|stringformat:"s" == "False" %}selected{% endif %}>No</option>
           </select>
+          {% if form.discharge_test_conducted.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.discharge_test_conducted.errors }}</div>{% endif %}
         </div>
+
+        <!-- Model field: cleanliness_of_battery -->
         <div class="col-6 col-md-4">
           <label class="form-label">Battery Cleanliness</label>
-          <select name="battery_cleanliness" class="form-select">
+          <select name="cleanliness_of_battery" class="form-select cond-select">
             <option value="">— Select —</option>
-            <option value="good"    {% if form.battery_cleanliness.value == "good"    %}selected{% endif %}>Good</option>
-            <option value="average" {% if form.battery_cleanliness.value == "average" %}selected{% endif %}>Average</option>
-            <option value="poor"    {% if form.battery_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
+            <option value="good"    {% if form.cleanliness_of_battery.value == "good"    %}selected{% endif %}>Good</option>
+            <option value="average" {% if form.cleanliness_of_battery.value == "average" %}selected{% endif %}>Average</option>
+            <option value="poor"    {% if form.cleanliness_of_battery.value == "poor"    %}selected{% endif %}>Poor</option>
           </select>
+          {% if form.cleanliness_of_battery.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.cleanliness_of_battery.errors }}</div>{% endif %}
         </div>
       </div>
     </div>
@@ -285,64 +308,64 @@
     <div class="form-card-body">
       <div class="row g-3">
 
+        <!-- Model field: aviation_lamp_condition -->
         <div class="col-6 col-md-4">
-          <label class="form-label">
-            <i class="bi bi-lightbulb text-warning me-1"></i>Aviation Lamp
-          </label>
-          <select name="aviation_lamp" class="form-select cond-select">
+          <label class="form-label"><i class="bi bi-lightbulb text-warning me-1"></i>Aviation Lamp</label>
+          <select name="aviation_lamp_condition" class="form-select cond-select">
             <option value="">— Select —</option>
-            <option value="working"       {% if form.aviation_lamp.value == "working"       %}selected{% endif %}>Working</option>
-            <option value="not_working"   {% if form.aviation_lamp.value == "not_working"   %}selected{% endif %}>Not Working</option>
-            <option value="not_available" {% if form.aviation_lamp.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="working"       {% if form.aviation_lamp_condition.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.aviation_lamp_condition.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.aviation_lamp_condition.value == "not_available" %}selected{% endif %}>Not Available</option>
           </select>
+          {% if form.aviation_lamp_condition.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.aviation_lamp_condition.errors }}</div>{% endif %}
         </div>
 
+        <!-- Model field: fire_extinguisher_condition -->
         <div class="col-6 col-md-4">
-          <label class="form-label">
-            <i class="bi bi-fire text-danger me-1"></i>Fire Extinguisher
-          </label>
-          <select name="fire_extinguisher" class="form-select cond-select">
+          <label class="form-label"><i class="bi bi-fire text-danger me-1"></i>Fire Extinguisher</label>
+          <select name="fire_extinguisher_condition" class="form-select cond-select">
             <option value="">— Select —</option>
-            <option value="working"       {% if form.fire_extinguisher.value == "working"       %}selected{% endif %}>Working</option>
-            <option value="not_working"   {% if form.fire_extinguisher.value == "not_working"   %}selected{% endif %}>Not Working</option>
-            <option value="not_available" {% if form.fire_extinguisher.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="working"       {% if form.fire_extinguisher_condition.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.fire_extinguisher_condition.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.fire_extinguisher_condition.value == "not_available" %}selected{% endif %}>Not Available</option>
           </select>
+          {% if form.fire_extinguisher_condition.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.fire_extinguisher_condition.errors }}</div>{% endif %}
         </div>
 
+        <!-- Model field: aircondition_status -->
         <div class="col-6 col-md-4">
-          <label class="form-label">
-            <i class="bi bi-wind text-info me-1"></i>AC Status
-          </label>
-          <select name="ac_status" class="form-select cond-select">
+          <label class="form-label"><i class="bi bi-wind text-info me-1"></i>AC Status</label>
+          <select name="aircondition_status" class="form-select cond-select">
             <option value="">— Select —</option>
-            <option value="working"       {% if form.ac_status.value == "working"       %}selected{% endif %}>Working</option>
-            <option value="not_working"   {% if form.ac_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
-            <option value="not_available" {% if form.ac_status.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="working"       {% if form.aircondition_status.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="not_working"   {% if form.aircondition_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
+            <option value="not_available" {% if form.aircondition_status.value == "not_available" %}selected{% endif %}>Not Available</option>
           </select>
+          {% if form.aircondition_status.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.aircondition_status.errors }}</div>{% endif %}
         </div>
 
+        <!-- Model field: free_cooling_status -->
         <div class="col-6 col-md-4">
-          <label class="form-label">
-            <i class="bi bi-thermometer-snow text-primary me-1"></i>Free Cooling
-          </label>
+          <label class="form-label"><i class="bi bi-thermometer-snow text-primary me-1"></i>Free Cooling</label>
           <select name="free_cooling_status" class="form-select cond-select">
             <option value="">— Select —</option>
             <option value="working"       {% if form.free_cooling_status.value == "working"       %}selected{% endif %}>Working</option>
             <option value="not_working"   {% if form.free_cooling_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
             <option value="not_available" {% if form.free_cooling_status.value == "not_available" %}selected{% endif %}>Not Available</option>
           </select>
+          {% if form.free_cooling_status.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.free_cooling_status.errors }}</div>{% endif %}
         </div>
 
+        <!-- Model field: overall_site_cleanliness -->
         <div class="col-6 col-md-4">
-          <label class="form-label">
-            <i class="bi bi-stars text-success me-1"></i>Site Cleanliness
-          </label>
-          <select name="site_cleanliness" class="form-select cond-select">
+          <label class="form-label"><i class="bi bi-stars text-success me-1"></i>Overall Site Cleanliness</label>
+          <select name="overall_site_cleanliness" class="form-select cond-select">
             <option value="">— Select —</option>
-            <option value="good"    {% if form.site_cleanliness.value == "good"    %}selected{% endif %}>Good</option>
-            <option value="average" {% if form.site_cleanliness.value == "average" %}selected{% endif %}>Average</option>
-            <option value="poor"    {% if form.site_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
+            <option value="good"    {% if form.overall_site_cleanliness.value == "good"    %}selected{% endif %}>Good</option>
+            <option value="average" {% if form.overall_site_cleanliness.value == "average" %}selected{% endif %}>Average</option>
+            <option value="poor"    {% if form.overall_site_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
           </select>
+          {% if form.overall_site_cleanliness.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.overall_site_cleanliness.errors }}</div>{% endif %}
         </div>
 
       </div>
@@ -375,7 +398,7 @@
 </form>
 
 <style>
-  /* ── Form Card ── */
+  /* your existing styles kept as-is */
   .form-card {
     background:#fff; border:1px solid var(--grey-200);
     border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
@@ -408,7 +431,6 @@
   }
   .form-card-body { padding:1.1rem; }
 
-  /* ── Input with icon ── */
   .ico-wrap { position:relative; }
   .fld-ico {
     position:absolute; left:10px; top:50%; transform:translateY(-50%);
@@ -416,7 +438,6 @@
   }
   .ico-input { padding-left:30px !important; }
 
-  /* ── Labels extras ── */
   .utag {
     font-size:0.63rem; font-weight:600;
     background:var(--blue-100); color:var(--blue-700);
@@ -425,7 +446,6 @@
   }
   .req { color:#ef4444; margin-left:2px; }
 
-  /* ── Info Panel ── */
   .info-panel {
     background:linear-gradient(135deg,var(--blue-50),#f0f7ff);
     border:1px solid var(--blue-100); border-radius:var(--radius-md); overflow:hidden;
@@ -436,23 +456,14 @@
     text-transform:uppercase; letter-spacing:0.5px;
   }
   .info-grid { display:grid; grid-template-columns:repeat(3,1fr); }
-  .info-cell {
-    padding:0.65rem 1rem;
-    border-right:1px solid var(--blue-100);
-  }
+  .info-cell { padding:0.65rem 1rem; border-right:1px solid var(--blue-100); }
   .info-cell:last-child { border-right:none; }
   .info-lbl {
     display:block; font-size:0.68rem; font-weight:600;
     color:var(--grey-400); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:3px;
   }
   .info-val { display:block; font-size:0.88rem; font-weight:700; color:var(--blue-800); }
-  @media(max-width:576px){
-    .info-grid { grid-template-columns:1fr 1fr; }
-    .info-cell:nth-child(2) { border-right:none; }
-    .info-cell:nth-child(3) { border-right:none; border-top:1px solid var(--blue-100); grid-column:1/-1; }
-  }
 
-  /* ── Module Grid ── */
   .module-grid {
     display:flex; align-items:center; gap:8px;
     background:var(--grey-50); border:1px solid var(--grey-200);
@@ -465,33 +476,20 @@
     letter-spacing:0.5px; color:var(--grey-500); margin-bottom:6px;
     display:flex; align-items:center; gap:5px;
   }
-  .module-arrow {
-    font-size:1.3rem; color:var(--blue-400);
-    flex-shrink:0; padding-bottom:2px;
-  }
+  .module-arrow { font-size:1.3rem; color:var(--blue-400); flex-shrink:0; padding-bottom:2px; }
   .total-cell   .form-control { border-color:var(--blue-300,#93c5fd); background:#eff6ff; font-weight:700; }
   .working-cell .form-control { border-color:#86efac; background:#f0fdf4; }
   .faulty-cell  .form-control { border-color:#fca5a5; background:#fef2f2; }
   .spare-cell   .form-control { border-color:#cbd5e1; background:#f8fafc; }
-  .mdot {
-    display:inline-block; width:8px; height:8px;
-    border-radius:50%; flex-shrink:0;
-  }
+  .mdot { display:inline-block; width:8px; height:8px; border-radius:50%; flex-shrink:0; }
   .green-dot { background:#22c55e; }
   .red-dot   { background:#ef4444; }
   .grey-dot  { background:#94a3b8; }
-  @media(max-width:576px){
-    .module-grid { gap:6px; }
-    .module-arrow { display:none; }
-    .module-cell  { min-width:calc(50% - 10px); }
-  }
 
-  /* ── Condition select colour ── */
   .cond-select.sel-good { border-color:#22c55e !important; background:#f0fdf4 !important; color:#166534 !important; }
   .cond-select.sel-bad  { border-color:#ef4444 !important; background:#fef2f2 !important; color:#991b1b !important; }
   .cond-select.sel-avg  { border-color:#f59e0b !important; background:#fffbeb !important; color:#92400e !important; }
 
-  /* ── Submit bar ── */
   .submit-bar {
     background:#fff; border:1px solid var(--grey-200);
     border-radius:var(--radius-md); box-shadow:var(--shadow-sm);
@@ -502,21 +500,15 @@
     justify-content:space-between; gap:12px; flex-wrap:wrap;
   }
   .submit-hint { font-size:0.78rem; color:var(--grey-500); display:flex; align-items:center; }
-  @media(max-width:576px){
-    .submit-inner { flex-direction:column; align-items:stretch; }
-    .submit-inner .d-flex { justify-content:stretch; }
-    .submit-inner .d-flex .btn-blue,
-    .submit-inner .d-flex .btn-outline-blue { flex:1; justify-content:center; }
-    .submit-hint { justify-content:center; margin-bottom:4px; }
-  }
 </style>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
 $(document).ready(function () {
 
-  /* ── Select2 site search ── */
+  // Select2 site search
   $('#site_select').select2({
     theme: 'bootstrap-5',
     placeholder: 'Type site name or Pkey to search...',
@@ -530,7 +522,7 @@ $(document).ready(function () {
     }
   });
 
-  /* ── Populate site info panel on selection ── */
+  // Populate site info panel on selection
   $('#site_select').on('select2:select', function (e) {
     const s = e.params.data;
     $('#site_code').text(s.site_code || '—');
@@ -539,29 +531,33 @@ $(document).ready(function () {
     $('#site_preview').slideDown(250);
   });
 
-  /* ── Colour condition selects on change ── */
+  // Colour condition selects on change
   function colorCond(el) {
     const v = $(el).val();
     $(el).removeClass('sel-good sel-bad sel-avg');
-    if (v === 'working' || v === 'good' || v === 'Yes')       $(el).addClass('sel-good');
-    else if (v === 'not_working' || v === 'poor')             $(el).addClass('sel-bad');
-    else if (v === 'not_available' || v === 'average' || v === 'No') $(el).addClass('sel-avg');
+    if (v === 'working' || v === 'good' || v === 'True')            $(el).addClass('sel-good');
+    else if (v === 'not_working' || v === 'poor' || v === 'False')  $(el).addClass('sel-bad');
+    else if (v === 'not_available' || v === 'average' || v === '')  $(el).addClass('sel-avg');
   }
-  $('.cond-select, select[name="discharge_test_conducted"], select[name="battery_cleanliness"]')
+
+  $('.cond-select, select[name="discharge_test_conducted"], select[name="cleanliness_of_battery"]')
     .on('change', function () { colorCond(this); });
 
-  /* ── Module total validation indicator ── */
+  // Module total validation indicator (MODEL FIELD NAMES)
   function checkModules() {
-    const total   = parseInt($('input[name="total_modules"]').val()) || 0;
-    const working = parseInt($('input[name="working_modules"]').val()) || 0;
-    const faulty  = parseInt($('input[name="faulty_modules"]').val()) || 0;
-    const spare   = parseInt($('input[name="spare_modules"]').val()) || 0;
+    const total   = parseInt($('input[name="modules_total"]').val()) || 0;
+    const working = parseInt($('input[name="modules_working"]').val()) || 0;
+    const faulty  = parseInt($('input[name="modules_faulty"]').val()) || 0;
+    const spare   = parseInt($('input[name="modules_spare"]').val()) || 0;
+
     const sum = working + faulty + spare;
-    const totalInput = $('input[name="total_modules"]');
+    const totalInput = $('input[name="modules_total"]');
+
     totalInput.toggleClass('is-invalid', total > 0 && sum !== total);
     totalInput.toggleClass('border-success', total > 0 && sum === total);
   }
-  $('input[name="total_modules"], input[name="working_modules"], input[name="faulty_modules"], input[name="spare_modules"]')
+
+  $('input[name="modules_total"], input[name="modules_working"], input[name="modules_faulty"], input[name="modules_spare"]')
     .on('input', checkModules);
 
 });
