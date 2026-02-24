@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% block title %}Media Logs — BSSutility{% endblock %}
+{% block nav_transmedia_logs %}active{% endblock %}
+{% block mob_transmedia %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-clock-history"></i></div>
+    <div>
+      Transmission Media Change Logs
+      <span class="ph-sub">Every upload/edit/conversion is saved with date/time</span>
+    </div>
+  </div>
+  <a href="{% url 'transmedia:inventory_list' %}" class="btn-outline-blue">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-funnel"></i> Filters
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-2">
+      <div class="col-md-6">
+        <input class="form-control" name="q" value="{{ q }}" placeholder="Search site/action">
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" name="action">
+          <option value="">All Actions</option>
+          {% for a in actions %}
+            <option value="{{ a }}" {% if a == action_selected %}selected{% endif %}>{{ a }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn-blue w-100" type="submit"><i class="bi bi-search"></i> Filter</button>
+      </div>
+    </form>
+    <div class="mt-2">
+      <a class="btn-outline-blue" href="?export=csv{% if q %}&q={{ q }}{% endif %}{% if action_selected %}&action={{ action_selected }}{% endif %}">
+        <i class="bi bi-download"></i> Export CSV
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-list-ul"></i> Logs
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Site</th>
+            <th>Action</th>
+            <th>User</th>
+            <th>Remarks</th>
+            <th>Old</th>
+            <th>New</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for l in logs %}
+          <tr>
+            <td>{{ l.created_at }}</td>
+            <td>{{ l.site_name }}</td>
+            <td><b>{{ l.action }}</b></td>
+            <td>{{ l.changed_by }}</td>
+            <td>{{ l.remarks }}</td>
+            <td><pre style="white-space:pre-wrap;max-width:360px;">{{ l.old_data }}</pre></td>
+            <td><pre style="white-space:pre-wrap;max-width:360px;">{{ l.new_data }}</pre></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="7" class="text-center text-muted">No logs</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

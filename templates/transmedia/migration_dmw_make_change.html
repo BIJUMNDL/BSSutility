@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}DMW Make Change — BSSutility{% endblock %}
+{% block nav_transmedia_migrations %}active{% endblock %}
+{% block mob_transmedia_migrations %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-tools"></i></div>
+    <div>
+      DMW -> DMW Make change
+      <span class="ph-sub">Transmission Media and Terminal Equipment stay DMW</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'transmedia:migrations_index' %}" class="btn-outline-blue">
+      <i class="bi bi-arrow-left"></i> Back to Migrations
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-pencil-square"></i> DMW Make Change Form
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.record.label }}</label>
+        {{ form.record }}
+        {% if form.record.errors %}<div class="field-error">{{ form.record.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.b_end.label }}</label>
+        {{ form.b_end }}
+        {% if form.b_end.errors %}<div class="field-error">{{ form.b_end.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.make.label }}</label>
+        {{ form.make }}
+        {% if form.make.errors %}<div class="field-error">{{ form.make.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.disposition.label }}</label>
+        {{ form.disposition }}
+        {% if form.disposition.errors %}<div class="field-error">{{ form.disposition.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3 diversion-only">
+        <label class="form-label">{{ form.diverted_site_name.label }}</label>
+        {{ form.diverted_site_name }}
+        {% if form.diverted_site_name.errors %}<div class="field-error">{{ form.diverted_site_name.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3 diversion-only">
+        <label class="form-label">{{ form.diversion_order.label }}</label>
+        {{ form.diversion_order }}
+        {% if form.diversion_order.errors %}<div class="field-error">{{ form.diversion_order.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.date_of_decommissioning.label }}</label>
+        {{ form.date_of_decommissioning }}
+        {% if form.date_of_decommissioning.errors %}<div class="field-error">{{ form.date_of_decommissioning.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.date_of_commissioning.label }}</label>
+        {{ form.date_of_commissioning }}
+        {% if form.date_of_commissioning.errors %}<div class="field-error">{{ form.date_of_commissioning.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.stored.label }}</label>
+        {{ form.stored }}
+        {% if form.stored.errors %}<div class="field-error">{{ form.stored.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.remarks.label }}</label>
+        {{ form.remarks }}
+        {% if form.remarks.errors %}<div class="field-error">{{ form.remarks.errors }}</div>{% endif %}
+      </div>
+
+      <button class="btn-blue" type="submit">
+        <i class="bi bi-check2-circle"></i> Apply Make Change
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const disposition = document.getElementById("id_disposition");
+    const stored = document.getElementById("id_stored");
+    const diversionFields = document.querySelectorAll(".diversion-only");
+    function toggleDiversionFields() {
+      const show = disposition && disposition.value === "DIVERSION";
+      diversionFields.forEach(el => {
+        el.style.display = show ? "" : "none";
+      });
+      if (stored) {
+        if (show) {
+          stored.value = "DIVERTED";
+          stored.setAttribute("disabled", "disabled");
+        } else {
+          stored.removeAttribute("disabled");
+        }
+      }
+    }
+    if (disposition) {
+      disposition.addEventListener("change", toggleDiversionFields);
+      toggleDiversionFields();
+    }
+  })();
+</script>
+{% endblock %}

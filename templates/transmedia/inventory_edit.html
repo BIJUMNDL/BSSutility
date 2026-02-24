@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Edit Media — BSSutility{% endblock %}
+{% block nav_transmedia %}active{% endblock %}
+{% block mob_transmedia %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-pencil-square"></i></div>
+    <div>
+      Edit Media Inventory
+      <span class="ph-sub">{{ obj.site_name }} — TE ID auto updates</span>
+    </div>
+  </div>
+  <a href="{% url 'transmedia:inventory_list' %}" class="btn-outline-blue">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-card-checklist"></i> Update Details
+  </div>
+  <div class="card-body">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn-blue" type="submit"><i class="bi bi-save"></i> Save</button>
+      <a class="btn-outline-blue" href="{% url 'transmedia:inventory_list' %}">
+        <i class="bi bi-x-circle"></i> Cancel
+      </a>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Migrations — BSSutility{% endblock %}
+{% block nav_transmedia_migrations %}active{% endblock %}
+{% block mob_transmedia_migrations %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-arrow-left-right"></i></div>
+    <div>
+      Migrations
+      <span class="ph-sub">Choose a migration type to update records</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'transmedia:inventory_list' %}" class="btn-outline-blue">
+      <i class="bi bi-table"></i> Back to Inventory
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-ui-checks"></i> Migration Options
+  </div>
+  <div class="card-body">
+    <div class="d-flex flex-wrap gap-2">
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_diversion' %}">
+        <i class="bi bi-signpost-2"></i> Diversion DMW
+      </a>
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_shift_to_store' %}">
+        <i class="bi bi-box-arrow-in-down"></i> Shift to Store
+      </a>
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_reparenting' %}">
+        <i class="bi bi-diagram-3"></i> Reparenting (change B END)
+      </a>
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_dmw_to_of' %}">
+        <i class="bi bi-arrow-repeat"></i> DMW -> OF conversion
+      </a>
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_cpan_to_maan' %}">
+        <i class="bi bi-arrow-left-right"></i> CPAN -> MAAN conversion
+      </a>
+      <a class="btn-outline-blue" href="{% url 'transmedia:migration_dmw_make_change' %}">
+        <i class="bi bi-tools"></i> DMW -> DMW Make change
+      </a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

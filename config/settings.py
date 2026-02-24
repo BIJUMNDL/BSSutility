@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "utility.apps.UtilityConfig",
+     "transmedia",
 ]
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -134,3 +135,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 CSRF_TRUSTED_ORIGINS = ["https://*.onrender.com"]
+
+# Use existing admin auth UI for login_required redirects.
+LOGIN_URL = "/admin/login/"
+LOGIN_REDIRECT_URL = "/"

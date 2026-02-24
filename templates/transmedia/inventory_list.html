@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Media Inventory — BSSutility{% endblock %}
+{% block nav_transmedia %}active{% endblock %}
+{% block mob_transmedia %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-diagram-3"></i></div>
+    <div>
+      Transmission Media Inventory
+      <span class="ph-sub">Upload template, edit, and apply conversions with auto TE-ID and logs</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'transmedia:excel_upload' %}" class="btn-outline-blue">
+      <i class="bi bi-upload"></i> Upload Template
+    </a>
+    <a href="{% url 'transmedia:log_list' %}" class="btn-outline-blue">
+      <i class="bi bi-clock-history"></i> Logs
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-search"></i> Search
+  </div>
+  <div class="card-body">
+    <form method="get">
+      <div class="input-group">
+        <input class="form-control" name="q" value="{{ q }}" placeholder="Search by Site Name or TE ID">
+        <button class="btn-blue" type="submit"><i class="bi bi-search"></i> Search</button>
+      </div>
+    </form>
+    <div class="mt-2">
+      <a class="btn-outline-blue" href="?export=csv{% if q %}&q={{ q }}{% endif %}">
+        <i class="bi bi-download"></i> Export CSV
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-info-circle"></i> Records are updated
+  </div>
+  <div class="card-body">
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Site</th>
+            <th>Media</th>
+            <th>B END</th>
+            <th>Terminal Eq</th>
+            <th>Make</th>
+            <th>TE ID</th>
+            <th>Cluster</th>
+            <th>2G</th>
+            <th>3G</th>
+            <th>4G</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+          <tr>
+            <td>{{ r.site_name }}</td>
+            <td>{{ r.transmission_media }}</td>
+            <td>{{ r.b_end }}</td>
+            <td>{{ r.terminal_equipment_type }}</td>
+            <td>{{ r.make }}</td>
+            <td><b>{{ r.terminalequipment_id }}</b></td>
+            <td>{{ r.cluster }}</td>
+            <td>{{ r.port_2g }}</td>
+            <td>{{ r.port_3g }}</td>
+            <td>{{ r.port_4g }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="10" class="text-center text-muted">No records found</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+{% endblock %}

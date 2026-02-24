@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% block title %}Reparenting — BSSutility{% endblock %}
+{% block nav_transmedia_migrations %}active{% endblock %}
+{% block mob_transmedia_migrations %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-diagram-3"></i></div>
+    <div>
+      Reparenting (change B END)
+      <span class="ph-sub">Update B END, terminal equipment, make, cluster, and ports. TERMINALEQUIPMENT ID is auto-updated.</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a href="{% url 'transmedia:migrations_index' %}" class="btn-outline-blue">
+      <i class="bi bi-arrow-left"></i> Back to Migrations
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-pencil-square"></i> Reparenting Form
+  </div>
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.record.label }}</label>
+        {{ form.record }}
+        {% if form.record.errors %}<div class="field-error">{{ form.record.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.b_end.label }}</label>
+        {{ form.b_end }}
+        {% if form.b_end.errors %}<div class="field-error">{{ form.b_end.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.terminal_equipment_type.label }}</label>
+        {{ form.terminal_equipment_type }}
+        {% if form.terminal_equipment_type.errors %}<div class="field-error">{{ form.terminal_equipment_type.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.make.label }}</label>
+        {{ form.make }}
+        {% if form.make.errors %}<div class="field-error">{{ form.make.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.cluster.label }}</label>
+        {{ form.cluster }}
+        {% if form.cluster.errors %}<div class="field-error">{{ form.cluster.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.port_2g.label }}</label>
+        {{ form.port_2g }}
+        {% if form.port_2g.errors %}<div class="field-error">{{ form.port_2g.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.port_3g.label }}</label>
+        {{ form.port_3g }}
+        {% if form.port_3g.errors %}<div class="field-error">{{ form.port_3g.errors }}</div>{% endif %}
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.port_4g.label }}</label>
+        {{ form.port_4g }}
+        {% if form.port_4g.errors %}<div class="field-error">{{ form.port_4g.errors }}</div>{% endif %}
+      </div>
+
+      <div class="alert alert-info mb-3">
+        <i class="bi bi-info-circle"></i>
+        <div style="flex:1;">TERMINALEQUIPMENT ID is auto-updated when you submit this form.</div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">{{ form.remarks.label }}</label>
+        {{ form.remarks }}
+        {% if form.remarks.errors %}<div class="field-error">{{ form.remarks.errors }}</div>{% endif %}
+      </div>
+
+      <button class="btn-blue" type="submit">
+        <i class="bi bi-check2-circle"></i> Apply Reparenting
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}

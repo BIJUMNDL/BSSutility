@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Spare DMW Records — BSSutility{% endblock %}
+{% block nav_transmedia_spares %}active{% endblock %}
+{% block mob_transmedia_spares %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-box-seam"></i></div>
+    <div>
+      Spare DMW Records
+      <span class="ph-sub">Decommissioned equipment inventory</span>
+    </div>
+  </div>
+  <a href="{% url 'transmedia:inventory_list' %}" class="btn-outline-blue">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-funnel"></i> Filters
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-2">
+      <div class="col-md-6">
+        <input class="form-control" name="q" value="{{ q }}" placeholder="Search TE ID, terminal equipment, site">
+      </div>
+      <div class="col-md-4">
+        <select class="form-select" name="stored">
+          <option value="">All Storage</option>
+          {% for val, label in stored_choices %}
+            <option value="{{ val }}" {% if val == stored %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-2">
+        <button class="btn-blue w-100" type="submit"><i class="bi bi-search"></i> Filter</button>
+      </div>
+    </form>
+    <div class="mt-2">
+      <a class="btn-outline-blue" href="?export=csv{% if q %}&q={{ q }}{% endif %}{% if stored %}&stored={{ stored }}{% endif %}">
+        <i class="bi bi-download"></i> Export CSV
+      </a>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-list-ul"></i> Spare DMW Table
+  </div>
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-bordered table-sm align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Terminal Equipment</th>
+            <th>Date of Decommissioning</th>
+            <th>TE ID</th>
+            <th>Date of Commissioning</th>
+            <th>Stored</th>
+            <th>Site</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in spares %}
+          <tr>
+            <td>{{ s.terminal_equipment }}</td>
+            <td>{{ s.date_of_decommissioning }}</td>
+            <td><b>{{ s.terminalequipment_id }}</b></td>
+            <td>{{ s.date_of_commissioning }}</td>
+            <td>{{ s.get_stored_display }}</td>
+            <td>{{ s.record.site_name }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6" class="text-center text-muted">No spare records</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

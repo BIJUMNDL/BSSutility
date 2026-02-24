@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Upload Media Template — BSSutility{% endblock %}
+{% block nav_transmedia_upload %}active{% endblock %}
+{% block mob_transmedia %}active{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-upload"></i></div>
+    <div>
+      Upload Transmission Media Template
+      <span class="ph-sub">Excel sheet: <b>media inventory table</b> | Column: <b>TERMINALEQUIPMENT ID</b> can be blank</span>
+    </div>
+  </div>
+  <a href="{% url 'transmedia:inventory_list' %}" class="btn-outline-blue">
+    <i class="bi bi-arrow-left"></i> Back
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-info-circle"></i> Rules
+  </div>
+  <div class="card-body">
+    <div class="alert alert-info mb-0">
+      <div>
+        <b>TERMINALEQUIPMENT ID</b> is auto-generated as:
+        <br><b>Full SITE NAME (no spaces) + full Terminal Equipment (MAAN/DMW/CPAN) + first 3 letters of Make</b>.
+        <br>So keep that Excel column blank.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header white-bordered">
+    <i class="bi bi-file-earmark-excel"></i> Upload
+  </div>
+  <div class="card-body">
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <button class="btn-blue" type="submit"><i class="bi bi-cloud-arrow-up"></i> Upload</button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
