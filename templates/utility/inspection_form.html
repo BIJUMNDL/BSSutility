@@ -338,6 +338,7 @@
           <select name="aircondition_status" class="form-select cond-select">
             <option value="">— Select —</option>
             <option value="working"       {% if form.aircondition_status.value == "working"       %}selected{% endif %}>Working</option>
+            <option value="both_ac_working" {% if form.aircondition_status.value == "both_ac_working" %}selected{% endif %}>BOTH AC are working</option>
             <option value="not_working"   {% if form.aircondition_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
             <option value="not_available" {% if form.aircondition_status.value == "not_available" %}selected{% endif %}>Not Available</option>
           </select>
@@ -535,7 +536,7 @@ $(document).ready(function () {
   function colorCond(el) {
     const v = $(el).val();
     $(el).removeClass('sel-good sel-bad sel-avg');
-    if (v === 'working' || v === 'good' || v === 'True')            $(el).addClass('sel-good');
+    if (v === 'working' || v === 'both_ac_working' || v === 'good' || v === 'True')            $(el).addClass('sel-good');
     else if (v === 'not_working' || v === 'poor' || v === 'False')  $(el).addClass('sel-bad');
     else if (v === 'not_available' || v === 'average' || v === '')  $(el).addClass('sel-avg');
   }

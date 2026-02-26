@@ -19,6 +19,12 @@ class Inspection(models.Model):
     DG_STATUS_CHOICES = [("auto","Auto"), ("manual","Manual"), ("faulty","Faulty")]
     CLEAN_CHOICES = [("good","Good"), ("average","Average"), ("poor","Poor")]
     COND_CHOICES = [("working","Working"), ("not_working","Not Working"), ("not_available","Not Available")]
+    AC_STATUS_CHOICES = [
+        ("working", "Working"),
+        ("both_ac_working", "BOTH AC are working"),
+        ("not_working", "Not Working"),
+        ("not_available", "Not Available"),
+    ]
 
     inspection_date = models.DateField()
     site = models.ForeignKey(Site, on_delete=models.PROTECT, related_name="inspections")
@@ -44,7 +50,7 @@ class Inspection(models.Model):
     cleanliness_of_battery = models.CharField(max_length=10, choices=CLEAN_CHOICES, null=True, blank=True)
     aviation_lamp_condition = models.CharField(max_length=20, choices=COND_CHOICES, null=True, blank=True)
     fire_extinguisher_condition = models.CharField(max_length=20, choices=COND_CHOICES, null=True, blank=True)
-    aircondition_status = models.CharField(max_length=20, choices=COND_CHOICES, null=True, blank=True)
+    aircondition_status = models.CharField(max_length=20, choices=AC_STATUS_CHOICES, null=True, blank=True)
     free_cooling_status = models.CharField(max_length=20, choices=COND_CHOICES, null=True, blank=True)
     overall_site_cleanliness = models.CharField(max_length=10, choices=CLEAN_CHOICES, null=True, blank=True)
 
