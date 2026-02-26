@@ -1,0 +1,38 @@
+{% extends "utility/base.html" %}
+{% block title %}Media Inventory{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-hdd-network"></i></div>
+    <div>
+      {% if object %}Edit Media Inventory{% else %}New Media Inventory{% endif %}
+      <span class="ph-sub">TEID is generated automatically</span>
+    </div>
+  </div>
+  <a class="btn-outline-blue" href="{% url 'media_inventory_list' %}">Back to List</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="post">
+      {% csrf_token %}
+      <div class="row g-3">
+        {% for field in form %}
+        <div class="col-12 col-md-6">
+          <label class="form-label">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}
+            <div class="field-error">{{ field.errors }}</div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="mt-3 d-flex gap-2">
+        <button type="submit" class="btn-blue">Save</button>
+        <a class="btn-outline-blue" href="{% url 'media_inventory_list' %}">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

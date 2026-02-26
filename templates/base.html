@@ -553,7 +553,7 @@
       </div>
       <div>
         <div class="brand-text">BSSutility</div>
-        <span class="brand-sub">Site Inspection System</span>
+        <span class="brand-sub">BSS MANAGEMENT SYSTEM</span>
       </div>
     </a>
 
@@ -681,6 +681,21 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+  <script>
+    (function () {
+      if (!window.jQuery || !jQuery.fn || !jQuery.fn.select2) return;
+      jQuery(".js-search-select").each(function () {
+        var $el = jQuery(this);
+        if ($el.hasClass("select2-hidden-accessible")) return;
+        $el.select2({
+          theme: "bootstrap-5",
+          width: "100%",
+          placeholder: $el.data("placeholder") || "Search...",
+          allowClear: true
+        });
+      });
+    })();
+  </script>
 
   {% block extra_js %}{% endblock %}
 </body>

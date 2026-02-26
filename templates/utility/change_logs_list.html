@@ -1,0 +1,57 @@
+{% extends "utility/base.html" %}
+{% block title %}Change Logs{% endblock %}
+{% block nav_change_logs %}active{% endblock %}
+{% block mob_change_logs %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-clock-history"></i></div>
+    <div>
+      Change Logs
+      <span class="ph-sub">Audit trail of Media Inventory updates</span>
+    </div>
+  </div>
+  <a class="btn-outline-blue" href="{% url 'export_change_logs_xlsx' %}?{{ request.GET.urlencode }}">Export to Excel</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="get" class="row g-2 mb-3">
+      <div class="col-12 col-md-3"><input class="form-control" name="action_type" placeholder="Action type" value="{{ request.GET.action_type }}"></div>
+      <div class="col-12 col-md-3"><input class="form-control" name="teid" placeholder="Record TEID" value="{{ request.GET.teid }}"></div>
+      <div class="col-12 col-md-4"><input class="form-control" name="remarks" placeholder="Remarks" value="{{ request.GET.remarks }}"></div>
+      <div class="col-12 col-md-2"><button class="btn-outline-blue w-100" type="submit">Filter</button></div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>created_at</th>
+            <th>action_type</th>
+            <th>record TEID</th>
+            <th>remarks</th>
+            <th>old_values</th>
+            <th>new_values</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in records %}
+          <tr>
+            <td>{{ r.created_at|date:"Y-m-d H:i:s" }}</td>
+            <td>{{ r.action_type }}</td>
+            <td>{% if r.record %}{{ r.record.terminalequipment_id }}{% endif %}</td>
+            <td>{{ r.remarks }}</td>
+            <td><pre style="white-space:pre-wrap;margin:0;">{{ r.old_values }}</pre></td>
+            <td><pre style="white-space:pre-wrap;margin:0;">{{ r.new_values }}</pre></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="6">No change logs found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

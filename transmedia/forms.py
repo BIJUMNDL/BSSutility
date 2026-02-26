@@ -27,7 +27,12 @@ class _BaseMigrationForm(forms.Form):
     record = forms.ModelChoiceField(
         queryset=MediaInventory.objects.none(),
         label="Record",
-        widget=forms.Select(attrs={"class": "form-select"}),
+        widget=forms.Select(
+            attrs={
+                "class": "form-select js-search-select",
+                "data-placeholder": "Type site name or TE ID to search...",
+            }
+        ),
     )
     remarks = forms.CharField(
         required=False,
@@ -146,7 +151,7 @@ class DmwToOfForm(_BaseMigrationForm):
     )
     stored = forms.ChoiceField(
         required=False,
-        choices=[("", "Select Storage"), ("BSS_STORE", "BSS Store"), ("IN_SITE", "In site"), ("DIVERTED", "Diverted")],
+        choices=[("", "Select Storage"), ("BSS_STORE", "BSS Store"), ("IN_SITE", "In site")],
         label="Stored",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
@@ -157,6 +162,8 @@ class DmwToOfForm(_BaseMigrationForm):
         if disposition == "DECOMMISSION":
             if not cleaned.get("date_of_decommissioning"):
                 self.add_error("date_of_decommissioning", "Date of decommissioning is required for Decommission.")
+            if not cleaned.get("stored"):
+                self.add_error("stored", "Stored is required for Decommission.")
         if disposition == "DIVERSION":
             if not cleaned.get("diverted_site_name"):
                 self.add_error("diverted_site_name", "Diverted site name is required for Diversion.")
@@ -203,16 +210,23 @@ class DmwMakeChangeForm(_BaseMigrationForm):
         ("DECOMMISSION", "Decommission"),
         ("DIVERSION", "Diversion"),
     ]
+    MAKE_CHOICES = [
+        ("CCERAGON", "CCeragon"),
+        ("ECERAGON", "ECeragon"),
+        ("NOKIA", "Nokia"),
+        ("UBR", "UBR"),
+    ]
 
     b_end = forms.CharField(
         required=True,
         label="New B END",
         widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "New B END"}),
     )
-    make = forms.CharField(
+    make = forms.ChoiceField(
         required=True,
         label="New Make",
-        widget=forms.TextInput(attrs={"class": "form-control", "placeholder": "New Make"}),
+        choices=MAKE_CHOICES,
+        widget=forms.Select(attrs={"class": "form-select"}),
     )
     disposition = forms.ChoiceField(
         required=True,
@@ -242,7 +256,7 @@ class DmwMakeChangeForm(_BaseMigrationForm):
     )
     stored = forms.ChoiceField(
         required=False,
-        choices=[("", "Select Storage"), ("BSS_STORE", "BSS Store"), ("IN_SITE", "In site"), ("DIVERTED", "Diverted")],
+        choices=[("", "Select Storage"), ("BSS_STORE", "BSS Store"), ("IN_SITE", "In site")],
         label="Stored",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
@@ -253,6 +267,8 @@ class DmwMakeChangeForm(_BaseMigrationForm):
         if disposition == "DECOMMISSION":
             if not cleaned.get("date_of_decommissioning"):
                 self.add_error("date_of_decommissioning", "Date of decommissioning is required for Decommission.")
+            if not cleaned.get("stored"):
+                self.add_error("stored", "Stored is required for Decommission.")
         if disposition == "DIVERSION":
             if not cleaned.get("diverted_site_name"):
                 self.add_error("diverted_site_name", "Diverted site name is required for Diversion.")

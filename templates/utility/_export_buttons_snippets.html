@@ -1,0 +1,14 @@
+{# Media Inventory page button #}
+<a class="btn-outline-blue" href="{% url 'export_media_inventory_xlsx' %}?{{ request.GET.urlencode }}">
+  Export to Excel
+</a>
+
+{# Spare DMW page button #}
+<a class="btn-outline-blue" href="{% url 'export_spare_dmw_xlsx' %}?{{ request.GET.urlencode }}">
+  Export to Excel
+</a>
+
+{# Change Logs page button #}
+<a class="btn-outline-blue" href="{% url 'export_change_logs_xlsx' %}?{{ request.GET.urlencode }}">
+  Export to Excel
+</a>

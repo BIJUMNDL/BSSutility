@@ -1,0 +1,48 @@
+{% extends "utility/base.html" %}
+{% block title %}Spare DMW{% endblock %}
+{% block nav_spare_dmw %}active{% endblock %}
+{% block mob_spare_dmw %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-router"></i></div>
+    <div>
+      Spare DMW
+      <span class="ph-sub">DMW equipment tracking</span>
+    </div>
+  </div>
+  <a class="btn-outline-blue" href="{% url 'export_spare_dmw_xlsx' %}?{{ request.GET.urlencode }}">Export to Excel</a>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>terminal_equipment</th>
+            <th>date_of_decommissioning</th>
+            <th>TEID</th>
+            <th>date_of_commissioning</th>
+            <th>stored</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in records %}
+          <tr>
+            <td>{{ r.terminal_equipment }}</td>
+            <td>{{ r.date_of_decommissioning|default:"" }}</td>
+            <td>{{ r.terminalequipment_id }}</td>
+            <td>{{ r.date_of_commissioning|default:"" }}</td>
+            <td>{{ r.stored|default:"" }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="5">No spare DMW records found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

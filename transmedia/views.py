@@ -24,6 +24,64 @@ from .models import MediaInventory, MediaChangeLog, SpareDMW, DiversionDMW
 from .utils import snapshot, log_change
 
 
+ACTION_SEARCH_ALIASES = {
+    "REPAR": [
+        "REPAR",
+        "REPARENT",
+        "REPARENTING",
+    ],
+    "DMW_TO_OF": [
+        "DMW TO OF",
+        "DMW_TO_OF",
+        "DMW-TO-OF",
+        "DWM TO OF",
+        "DWM_TO_OF",
+        "DWM-TO-OF",
+        "DMW OF CONVERSION",
+        "DWM OF CONVERSION",
+        "DMW TO OF CONVERSION",
+        "DWM TO OF CONVERSION",
+    ],
+    "CPAN_TO_MAAN": [
+        "CPAN TO MAAN",
+        "CPAN_TO_MAAN",
+        "CPAN-TO-MAAN",
+        "CPAN MAAN CONVERSION",
+        "CPAN TO MAAN CONVERSION",
+    ],
+    "DMW_MAKE_CHANGE": [
+        "DMW TO DMW",
+        "DMW_TO_DMW",
+        "DMW-TO-DMW",
+        "DWM TO DMW",
+        "DWM_TO_DMW",
+        "DWM-TO-DMW",
+        "DMW MAKE CHANGE",
+        "DWM MAKE CHANGE",
+        "DMW TO DMW CONVERSION",
+        "DWM TO DMW CONVERSION",
+    ],
+}
+
+
+def _normalize_action_search(value: str) -> str:
+    return " ".join((value or "").upper().replace("_", " ").replace("-", " ").split())
+
+
+def _matched_actions_for_query(q: str) -> list[str]:
+    normalized = _normalize_action_search(q)
+    if not normalized:
+        return []
+
+    matched = []
+    for action_code, aliases in ACTION_SEARCH_ALIASES.items():
+        alias_keys = {_normalize_action_search(a) for a in aliases}
+        alias_keys.add(_normalize_action_search(action_code))
+        if normalized in alias_keys or normalized in action_code:
+            matched.append(action_code)
+    return matched
+
+
 @login_required
 def inventory_list(request):
     q = (request.GET.get("q") or "").strip()
@@ -211,7 +269,11 @@ def log_list(request):
     logs = MediaChangeLog.objects.select_related("record").order_by("-created_at")
 
     if q:
-        logs = logs.filter(Q(site_name__icontains=q) | Q(action__icontains=q))
+        matched_actions = _matched_actions_for_query(q)
+        search_filter = Q(site_name__icontains=q) | Q(action__icontains=q)
+        if matched_actions:
+            search_filter |= Q(action__in=matched_actions)
+        logs = logs.filter(search_filter)
 
     if action:
         logs = logs.filter(action=action)

@@ -1,0 +1,34 @@
+{% extends "utility/base.html" %}
+
+{% block title %}Upload Media Inventory{% endblock %}
+{% block header %}Upload Media Inventory{% endblock %}
+
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="mb-3">
+    <label class="form-label">Select Excel File (.xlsx)</label>
+    {{ form.file }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Sheet Name (optional)</label>
+    {{ form.sheet }}
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Header Row</label>
+    {{ form.header_row }}
+  </div>
+  <button class="btn-blue" type="submit">Upload & Import</button>
+  <a class="btn-outline-blue ms-2" href="{% url 'export_media_inventory_xlsx' %}?{{ request.GET.urlencode }}">
+    Export to Excel
+  </a>
+</form>
+
+<div class="mt-4">
+  <p><strong>Mandatory columns:</strong></p>
+  <p>
+    B END, MAAN/DMW/CPAN, Make, Cluster, 2G PORT, 3G PORT, 4G PORT, TERMINALEQUIPMENT ID
+  </p>
+  <p><small>Note: TERMINALEQUIPMENT ID must be present and blank in all rows.</small></p>
+</div>
+{% endblock %}

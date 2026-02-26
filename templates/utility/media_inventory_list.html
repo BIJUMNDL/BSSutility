@@ -1,0 +1,70 @@
+{% extends "utility/base.html" %}
+{% block title %}Media Inventory{% endblock %}
+{% block nav_media_inventory %}active{% endblock %}
+{% block mob_media_inventory %}active{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-diagram-3"></i></div>
+    <div>
+      Media Inventory
+      <span class="ph-sub">View and manage TEID-linked records</span>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn-outline-blue" href="{% url 'export_media_inventory_xlsx' %}?{{ request.GET.urlencode }}">Export to Excel</a>
+    <a class="btn-blue" href="{% url 'media_inventory_create' %}">Add Record</a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <form method="get" class="row g-2 mb-3">
+      <div class="col-12 col-md-3"><input class="form-control" name="site_name" placeholder="Site name" value="{{ request.GET.site_name }}"></div>
+      <div class="col-12 col-md-2"><input class="form-control" name="terminal_equipment" placeholder="Equipment" value="{{ request.GET.terminal_equipment }}"></div>
+      <div class="col-12 col-md-2"><input class="form-control" name="make" placeholder="Make" value="{{ request.GET.make }}"></div>
+      <div class="col-12 col-md-2"><input class="form-control" name="cluster" placeholder="Cluster" value="{{ request.GET.cluster }}"></div>
+      <div class="col-12 col-md-2"><input class="form-control" name="teid" placeholder="TEID" value="{{ request.GET.teid }}"></div>
+      <div class="col-12 col-md-1"><button class="btn-outline-blue w-100" type="submit">Filter</button></div>
+    </form>
+
+    <div class="table-responsive">
+      <table class="table table-sm table-bordered">
+        <thead>
+          <tr>
+            <th>TEID</th>
+            <th>Site</th>
+            <th>Equipment</th>
+            <th>Make</th>
+            <th>Cluster</th>
+            <th>2G</th>
+            <th>3G</th>
+            <th>4G</th>
+            <th>Media</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in records %}
+          <tr>
+            <td>{{ r.terminalequipment_id }}</td>
+            <td>{{ r.site_name }}</td>
+            <td>{{ r.terminal_equipment }}</td>
+            <td>{{ r.make }}</td>
+            <td>{{ r.cluster }}</td>
+            <td>{{ r.port_2g }}</td>
+            <td>{{ r.port_3g }}</td>
+            <td>{{ r.port_4g }}</td>
+            <td>{{ r.transmission_media }}</td>
+            <td><a href="{% url 'media_inventory_update' r.pk %}">Edit</a></td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="10">No records found.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
