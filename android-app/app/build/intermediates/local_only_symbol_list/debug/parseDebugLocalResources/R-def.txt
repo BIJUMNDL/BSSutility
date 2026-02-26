@@ -1,0 +1,9 @@
+R_DEF: Internal format may change without notice
+local
+id btnDiesel
+id btnInspection
+id btnMigrations
+id webView
+layout activity_main
+string app_name
+style Theme.BSSUtilityMobile

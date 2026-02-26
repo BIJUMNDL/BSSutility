@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BSS Utility Mobile</string>
+    <style name="Theme.BSSUtilityMobile" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@android:color/holo_blue_dark</item>
+    </style>
+</resources>
