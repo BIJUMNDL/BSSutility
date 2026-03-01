@@ -22,6 +22,7 @@
 
 <form method="post" novalidate id="inspection-form">
   {% csrf_token %}
+  {% now "Y-m-d" as today_ymd %}
 
   <!-- ══════════ 01 — SITE & DATE ══════════ -->
   <div class="form-card">
@@ -45,6 +46,7 @@
         <div class="col-12 col-md-4">
           <label class="form-label">Inspection Date <span class="req">*</span></label>
           <input type="date" name="inspection_date"
+                 max="{{ today_ymd }}"
                  value="{{ form.inspection_date.value|default:'' }}"
                  class="form-control{% if form.inspection_date.errors %} is-invalid{% endif %}">
           {% if form.inspection_date.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.inspection_date.errors }}</div>{% endif %}
@@ -78,7 +80,7 @@
       <div class="fch-left">
         <div class="sec-badge yellow"><i class="bi bi-lightning-charge-fill"></i></div>
         <div>
-          <div class="sec-name">Power Readings</div>
+          <div class="sec-name">Power and DG readings</div>
           <div class="sec-desc">Enter meter readings at the time of inspection</div>
         </div>
       </div>
@@ -95,6 +97,28 @@
                    placeholder="0.00" class="form-control ico-input">
           </div>
           {% if form.eb_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.eb_reading.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">Power Factor</label>
+          <div class="ico-wrap">
+            <i class="bi bi-activity fld-ico"></i>
+            <input type="number" name="power_factor" step="0.01"
+                   value="{{ form.power_factor.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.power_factor.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.power_factor.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">Contract Demand</label>
+          <div class="ico-wrap">
+            <i class="bi bi-clipboard-data fld-ico"></i>
+            <input type="number" name="contract_demand" step="0.01"
+                   value="{{ form.contract_demand.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.contract_demand.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.contract_demand.errors }}</div>{% endif %}
         </div>
 
         <div class="col-6 col-md-4">
@@ -117,6 +141,17 @@
                    placeholder="0.00" class="form-control ico-input">
           </div>
           {% if form.hour_meter_reading.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.hour_meter_reading.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-6 col-md-4">
+          <label class="form-label">Diesel Balance</label>
+          <div class="ico-wrap">
+            <i class="bi bi-fuel-pump-fill fld-ico"></i>
+            <input type="number" name="diesel_balance" step="0.01"
+                   value="{{ form.diesel_balance.value|default:'' }}"
+                   placeholder="0.00" class="form-control ico-input">
+          </div>
+          {% if form.diesel_balance.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.diesel_balance.errors }}</div>{% endif %}
         </div>
       </div>
     </div>
@@ -328,6 +363,7 @@
             <option value="working"       {% if form.fire_extinguisher_condition.value == "working"       %}selected{% endif %}>Working</option>
             <option value="not_working"   {% if form.fire_extinguisher_condition.value == "not_working"   %}selected{% endif %}>Not Working</option>
             <option value="not_available" {% if form.fire_extinguisher_condition.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="na_outdoor_site" {% if form.fire_extinguisher_condition.value == "na_outdoor_site" %}selected{% endif %}>Not Applicable(OUTDOOR SITE)</option>
           </select>
           {% if form.fire_extinguisher_condition.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.fire_extinguisher_condition.errors }}</div>{% endif %}
         </div>
@@ -341,6 +377,7 @@
             <option value="both_ac_working" {% if form.aircondition_status.value == "both_ac_working" %}selected{% endif %}>BOTH AC are working</option>
             <option value="not_working"   {% if form.aircondition_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
             <option value="not_available" {% if form.aircondition_status.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="na_outdoor_site" {% if form.aircondition_status.value == "na_outdoor_site" %}selected{% endif %}>Not Applicable(OUTDOOR SITE)</option>
           </select>
           {% if form.aircondition_status.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.aircondition_status.errors }}</div>{% endif %}
         </div>
@@ -353,6 +390,7 @@
             <option value="working"       {% if form.free_cooling_status.value == "working"       %}selected{% endif %}>Working</option>
             <option value="not_working"   {% if form.free_cooling_status.value == "not_working"   %}selected{% endif %}>Not Working</option>
             <option value="not_available" {% if form.free_cooling_status.value == "not_available" %}selected{% endif %}>Not Available</option>
+            <option value="na_outdoor_site" {% if form.free_cooling_status.value == "na_outdoor_site" %}selected{% endif %}>Not Applicable(OUTDOOR SITE)</option>
           </select>
           {% if form.free_cooling_status.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.free_cooling_status.errors }}</div>{% endif %}
         </div>
@@ -367,6 +405,13 @@
             <option value="poor"    {% if form.overall_site_cleanliness.value == "poor"    %}selected{% endif %}>Poor</option>
           </select>
           {% if form.overall_site_cleanliness.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.overall_site_cleanliness.errors }}</div>{% endif %}
+        </div>
+
+        <div class="col-12">
+          <label class="form-label"><i class="bi bi-box-seam me-1"></i>Spare/Unused Items Available in Site</label>
+          <textarea name="spare_unused_items_available" rows="2" class="form-control"
+                    placeholder="Enter available spare or unused items...">{{ form.spare_unused_items_available.value|default:'' }}</textarea>
+          {% if form.spare_unused_items_available.errors %}<div class="field-error"><i class="bi bi-exclamation-circle-fill"></i>{{ form.spare_unused_items_available.errors }}</div>{% endif %}
         </div>
 
       </div>
@@ -538,7 +583,7 @@ $(document).ready(function () {
     $(el).removeClass('sel-good sel-bad sel-avg');
     if (v === 'working' || v === 'both_ac_working' || v === 'good' || v === 'True')            $(el).addClass('sel-good');
     else if (v === 'not_working' || v === 'poor' || v === 'False')  $(el).addClass('sel-bad');
-    else if (v === 'not_available' || v === 'average' || v === '')  $(el).addClass('sel-avg');
+    else if (v === 'not_available' || v === 'na_outdoor_site' || v === 'average' || v === '')  $(el).addClass('sel-avg');
   }
 
   $('.cond-select, select[name="discharge_test_conducted"], select[name="cleanliness_of_battery"]')

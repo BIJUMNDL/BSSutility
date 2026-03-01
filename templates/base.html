@@ -594,6 +594,10 @@
         <span class="nav-icon"><i class="bi bi-table"></i></span>
         Diesel Records
       </a>
+      <a href="/diesel/statement/" class="nav-link">
+        <span class="nav-icon"><i class="bi bi-bar-chart-line"></i></span>
+        Diesel Statement
+      </a>
 
       <!-- ✅ NEW: Transmission Media -->
       <div class="nav-group-label" style="margin-top:.6rem;">Transmission Media</div>
@@ -693,6 +697,15 @@
           placeholder: $el.data("placeholder") || "Search...",
           allowClear: true
         });
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var today = new Date();
+      var localToday = new Date(today.getTime() - (today.getTimezoneOffset() * 60000)).toISOString().slice(0, 10);
+      document.querySelectorAll('input[type="date"]').forEach(function (el) {
+        el.setAttribute("max", localToday);
       });
     })();
   </script>

@@ -1,0 +1,220 @@
+{% extends "utility/base.html" %}
+{% block title %}Diesel Statement — BSSutility{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-file-earmark-bar-graph"></i></div>
+    <div>
+      Diesel Statement
+      <span class="ph-sub">Month-wise and BSS Incharge-wise statement for {{ selected_month_name }} {{ selected_year }}</span>
+    </div>
+  </div>
+  <a class="btn-outline-blue d-none d-md-inline-flex"
+     href="{% url 'export_diesel_statement_xlsx' %}?year={{ selected_year }}&month={{ selected_month_name|urlencode }}{% if selected_bss_incharge %}&bss_incharge={{ selected_bss_incharge|urlencode }}{% endif %}{% if selected_site_id %}&site={{ selected_site_id|urlencode }}{% endif %}">
+    <i class="bi bi-file-earmark-excel"></i> Download Excel
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-funnel"></i> Filter Month
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-12 col-md-4">
+        <label class="form-label">Month</label>
+        <select name="month" class="form-select" required>
+          {% for m in month_choices %}
+            <option value="{{ m.name }}" data-month-number="{{ m.number }}" {% if m.number == selected_month %}selected{% endif %}>{{ m.name }}</option>
+          {% endfor %}
+        </select>
+        <small class="text-muted">Only completed months are allowed.</small>
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="form-label">Year</label>
+        <select name="year" class="form-select" required>
+          {% for y in year_choices %}
+            <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-2">
+        <label class="form-label">BSS Incharge</label>
+        <select name="bss_incharge" class="form-select">
+          <option value="">All</option>
+          {% for name in bss_incharge_choices %}
+            <option value="{{ name }}" {% if selected_bss_incharge == name %}selected{% endif %}>{{ name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="form-label">Site (Optional)</label>
+        <select name="site" class="form-select">
+          <option value="">All</option>
+          {% for s in site_choices %}
+            <option value="{{ s.id }}" {% if selected_site_id|stringformat:"s" == s.id|stringformat:"s" %}selected{% endif %}>{{ s.site_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-12 d-flex gap-2">
+        <button type="submit" class="btn-blue"><i class="bi bi-search"></i> Prepare</button>
+        <a href="{% url 'diesel_statement_list' %}" class="btn-outline-blue"><i class="bi bi-arrow-clockwise"></i> Reset</a>
+        <a class="btn-outline-blue"
+           href="{% url 'export_diesel_statement_xlsx' %}?year={{ selected_year }}&month={{ selected_month_name|urlencode }}{% if selected_bss_incharge %}&bss_incharge={{ selected_bss_incharge|urlencode }}{% endif %}{% if selected_site_id %}&site={{ selected_site_id|urlencode }}{% endif %}">
+          <i class="bi bi-download"></i> Excel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title mt-0 mb-2"><i class="bi bi-buildings"></i> Total Sites</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--blue-700);">{{ total_sites }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title mt-0 mb-2"><i class="bi bi-person-badge"></i> Total BSS Incharge</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--blue-700);">{{ total_incharges }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header blue-light">
+    <i class="bi bi-people"></i> BSS Incharge Summary
+  </div>
+  <div class="card-body p-0">
+    {% if summary_rows %}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>BSS Incharge</th>
+              <th>Sites</th>
+              <th>Diesel Filled</th>
+              <th>Diesel Consumption</th>
+              <th>Running Hours</th>
+              <th>Hourly Consumption</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in summary_rows %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.bss_incharge_name }}</td>
+                <td>{{ row.site_count }}</td>
+                <td>{{ row.diesel_filled_total|default:"-" }}</td>
+                <td>{{ row.diesel_consumption_total|default:"-" }}</td>
+                <td>{{ row.running_hours_total|default:"-" }}</td>
+                <td>{{ row.hourly_consumption_total|default:"-" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-3 text-muted">No statement data for {{ selected_month_name }} {{ selected_year }}.</div>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-table"></i> Diesel Statement Details
+  </div>
+  <div class="card-body p-0">
+    {% if rows %}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>BSS Incharge</th>
+              <th>Site Name</th>
+              <th>Site Code</th>
+              <th>Month</th>
+              <th>OB</th>
+              <th>OHMR</th>
+              <th>Diesel Filled</th>
+              <th>CB</th>
+              <th>CHMR</th>
+              <th>Diesel Consumption</th>
+              <th>Running Hours</th>
+              <th>Hourly Consumption</th>
+              <th>Remarks</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in rows %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.bss_incharge_name }}</td>
+                <td>{{ row.site_name }}</td>
+                <td>{{ row.site_code|default:"-" }}</td>
+                <td>{{ row.month }}</td>
+                <td>{{ row.opening_balance|default:"-" }}</td>
+                <td>{{ row.opening_hmr|default:"-" }}</td>
+                <td>{{ row.diesel_filled|default:"-" }}</td>
+                <td>{{ row.closing_balance|default:"-" }}</td>
+                <td>{{ row.closing_hmr|default:"-" }}</td>
+                <td>{{ row.diesel_consumption|default:"-" }}</td>
+                <td>{{ row.running_hours|default:"-" }}</td>
+                <td>{{ row.hourly_consumption|default:"-" }}</td>
+                <td>{{ row.remarks|default:"-" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-3 text-muted">No statement rows generated for {{ selected_month_name }} {{ selected_year }}.</div>
+    {% endif %}
+  </div>
+</div>
+<script>
+  (function () {
+    const yearSelect = document.querySelector('select[name="year"]');
+    const monthSelect = document.querySelector('select[name="month"]');
+    if (!yearSelect || !monthSelect) return;
+
+    const currentYear = parseInt("{{ current_year }}", 10);
+    const currentMonth = parseInt("{{ current_month }}", 10);
+
+    const applyRestriction = () => {
+      const selectedYear = parseInt(yearSelect.value, 10);
+      const monthOptions = Array.from(monthSelect.options);
+
+      monthOptions.forEach((option) => {
+        const monthNumber = parseInt(option.dataset.monthNumber, 10);
+        option.disabled = selectedYear >= currentYear && monthNumber >= currentMonth;
+      });
+
+      const selectedOption = monthSelect.options[monthSelect.selectedIndex];
+      if (selectedOption && selectedOption.disabled) {
+        const fallback =
+          monthOptions
+            .slice()
+            .reverse()
+            .find((option) => !option.disabled) ||
+          monthOptions.find((option) => !option.disabled);
+        if (fallback) {
+          monthSelect.value = fallback.value;
+        }
+      }
+    };
+
+    yearSelect.addEventListener("change", applyRestriction);
+    applyRestriction();
+  })();
+</script>
+{% endblock %}

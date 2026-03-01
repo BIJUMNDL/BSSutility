@@ -1,5 +1,17 @@
+import datetime
+
 from django import forms
+from django.utils import timezone
+
 from .models import MediaInventory, SpareDMW
+
+
+def _add_future_date_errors(form, date_fields):
+    today = timezone.localdate()
+    for field_name in date_fields:
+        value = form.cleaned_data.get(field_name)
+        if isinstance(value, datetime.date) and value > today:
+            form.add_error(field_name, f"Date cannot be after today ({today.isoformat()}).")
 
 
 class MediaInventoryForm(forms.ModelForm):
@@ -159,6 +171,7 @@ class DmwToOfForm(_BaseMigrationForm):
     def clean(self):
         cleaned = super().clean()
         disposition = cleaned.get("disposition") or ""
+        _add_future_date_errors(self, ("date_of_decommissioning", "date_of_commissioning"))
         if disposition == "DECOMMISSION":
             if not cleaned.get("date_of_decommissioning"):
                 self.add_error("date_of_decommissioning", "Date of decommissioning is required for Decommission.")
@@ -173,6 +186,9 @@ class DmwToOfForm(_BaseMigrationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        today_iso = timezone.localdate().isoformat()
+        self.fields["date_of_decommissioning"].widget.attrs["max"] = today_iso
+        self.fields["date_of_commissioning"].widget.attrs["max"] = today_iso
         self.fields["record"].queryset = MediaInventory.objects.filter(
             transmission_media="DMW"
         ).order_by("site_name")
@@ -264,6 +280,7 @@ class DmwMakeChangeForm(_BaseMigrationForm):
     def clean(self):
         cleaned = super().clean()
         disposition = cleaned.get("disposition") or ""
+        _add_future_date_errors(self, ("date_of_decommissioning", "date_of_commissioning"))
         if disposition == "DECOMMISSION":
             if not cleaned.get("date_of_decommissioning"):
                 self.add_error("date_of_decommissioning", "Date of decommissioning is required for Decommission.")
@@ -278,6 +295,9 @@ class DmwMakeChangeForm(_BaseMigrationForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        today_iso = timezone.localdate().isoformat()
+        self.fields["date_of_decommissioning"].widget.attrs["max"] = today_iso
+        self.fields["date_of_commissioning"].widget.attrs["max"] = today_iso
         self.fields["record"].queryset = MediaInventory.objects.filter(
             transmission_media="DMW"
         ).order_by("site_name")

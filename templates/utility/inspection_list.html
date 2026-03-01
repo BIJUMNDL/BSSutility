@@ -1,0 +1,111 @@
+{% extends "utility/base.html" %}
+{% block title %}View Inspections — BSSutility{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div class="page-header-title">
+    <div class="ph-icon"><i class="bi bi-list-check"></i></div>
+    <div>
+      View Inspections
+      <span class="ph-sub">Site inspected details for {{ selected_month_name }} {{ selected_year }}</span>
+    </div>
+  </div>
+  <a class="btn-outline-blue d-none d-md-inline-flex"
+     href="{% url 'export_inspections_xlsx' %}?year={{ selected_year }}&month={{ selected_month_name|urlencode }}">
+    <i class="bi bi-file-earmark-excel"></i> Download Excel
+  </a>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-funnel"></i> Filter Month
+  </div>
+  <div class="card-body">
+    <form method="get" class="row g-3 align-items-end">
+      <div class="col-12 col-md-4">
+        <label class="form-label">Month</label>
+        <select name="month" class="form-select">
+          {% for m in month_choices %}
+            <option value="{{ m.name }}" {% if m.number == selected_month %}selected{% endif %}>{{ m.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-3">
+        <label class="form-label">Year</label>
+        <select name="year" class="form-select">
+          {% for y in year_choices %}
+            <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-12 col-md-5 d-flex gap-2">
+        <button type="submit" class="btn-blue"><i class="bi bi-search"></i> Show</button>
+        <a href="{% url 'inspection_list' %}" class="btn-outline-blue"><i class="bi bi-arrow-clockwise"></i> Reset</a>
+        <a class="btn-outline-blue"
+           href="{% url 'export_inspections_xlsx' %}?year={{ selected_year }}&month={{ selected_month_name|urlencode }}">
+          <i class="bi bi-download"></i> Excel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3 mb-3">
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title mt-0 mb-2"><i class="bi bi-buildings"></i> Total Sites Inspected</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--blue-700);">{{ total_sites }}</div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-6">
+    <div class="card">
+      <div class="card-body">
+        <div class="section-title mt-0 mb-2"><i class="bi bi-clipboard-data"></i> Total Inspection Entries</div>
+        <div style="font-size:1.4rem;font-weight:800;color:var(--blue-700);">{{ total_records }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header blue-light">
+    <i class="bi bi-table"></i> Site Inspected Details - {{ selected_month_name }} {{ selected_year }}
+  </div>
+  <div class="card-body p-0">
+    {% if site_summary %}
+      <div class="table-responsive">
+        <table class="table table-sm table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>#</th>
+              <th>Site Name</th>
+              <th>Site Code</th>
+              <th>BSS Incharge</th>
+              <th>Technician</th>
+              <th>Inspections</th>
+              <th>Last Inspection</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in site_summary %}
+              <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ row.site__site_name }}</td>
+                <td>{{ row.site__site_code|default:"-" }}</td>
+                <td>{{ row.site__bss_incharge_name|default:"-" }}</td>
+                <td>{{ row.site__technician_name|default:"-" }}</td>
+                <td>{{ row.total_inspections }}</td>
+                <td>{{ row.last_inspection_date|date:"d M Y" }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <div class="p-3 text-muted">No inspections available for {{ selected_month_name }} {{ selected_year }}.</div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
